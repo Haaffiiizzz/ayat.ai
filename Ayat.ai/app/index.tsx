@@ -10,9 +10,17 @@ type RecordingItem = {
   file: string | null;
 };
 
+type APIResponse = {
+  Verse: string;
+  Ayah: string;
+  Surah: string;
+}
+
 export default function App() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedAudio, setRecordedAudio] = useState<RecordingItem | null>(null);
+  const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
+
 
   async function startRecording() {
     try {
@@ -51,9 +59,9 @@ export default function App() {
     const newRecordingItem: RecordingItem = { sound, duration, file };
     setRecordedAudio(newRecordingItem);
 
-    // --- Send audio to external function here ---
-    if (file) {const res = await sendAudioToAPI(file);
-      console.log(res)
+    //Call API and setresponse
+    if (file) {const response = await sendAudioToAPI(file);
+      setApiResponse(response)
     }
   }
 
@@ -70,18 +78,47 @@ export default function App() {
       <Button
         title={recording ? 'Stop Recording' : 'Start Recording'}
         onPress={recording ? stopRecording : startRecording}
+        color="#007AFF" // optional: iOS blue
       />
 
       {recordedAudio && (
-        <View style={styles.row}>
-          <Text style={styles.fill}>Duration: {recordedAudio.duration}</Text>
-          <Button onPress={() => recordedAudio.sound.replayAsync()} title="Play" />
-          <Button onPress={() => setRecordedAudio(null)} title="Clear Recording" />
+        <View style={styles.audioControls}>
+          <Text style={styles.durationText}>
+            Duration: {recordedAudio.duration}
+          </Text>
+          <View style={styles.buttonGroup}>
+            <Button onPress={() => recordedAudio.sound.replayAsync()} title="Play" />
+            <View style={styles.spacer} />
+            <Button onPress={() => setRecordedAudio(null)} title="Clear Recording" />
+          </View>
+        </View>
+      )}
+
+      {apiResponse && (
+        <View style={styles.responseContainer}>
+          <View style={styles.responseSection}>
+            <Text style={styles.responseText}>
+              Surah Number: {apiResponse.Surah}
+            </Text>
+          </View>
+          <View style={styles.responseSection}>
+            <Text style={styles.responseText}>
+              Ayah Number: {apiResponse.Ayah}
+            </Text>
+          </View>
+          <View style={styles.responseSection}>
+            <Text style={styles.arabicText}>
+              {apiResponse.Verse} :الآية
+            </Text>
+          </View>
         </View>
       )}
     </View>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -90,6 +127,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -97,8 +135,63 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 40,
   },
+
   fill: {
     flex: 1,
     margin: 15,
   },
+
+  responseContainer: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    alignSelf: 'stretch',
+    alignItems: 'center'
+  },
+
+  responseSection: {
+  marginBottom: 8,
+  backgroundColor: '#f9f9f9',
+  padding: 10,
+  borderRadius: 8,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.1,
+  shadowRadius: 2,
+  elevation: 2,
+  },
+
+  responseText: {
+    fontSize: 16,
+    marginBottom: 4,
+    textAlign: 'left',
+  },
+
+  arabicText: {
+    fontSize: 20,
+    writingDirection: 'rtl',
+    textAlign: 'right',
+    marginTop: 10,
+    lineHeight: 28,
+  },
+  
+  audioControls: {
+  marginTop: 20,
+  alignItems: 'center',
+  },
+
+  durationText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+
+  buttonGroup: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+
+  spacer: {
+    width: 12,
+  },
+
 });
