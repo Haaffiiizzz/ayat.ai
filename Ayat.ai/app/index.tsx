@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
-import { Audio, AVPlaybackStatus, Recording } from 'expo-av';
+import { Audio } from 'expo-av';
+import { sendAudioToAPI } from '@/utils/helper';
 
 type RecordingItem = {
   sound: Audio.Sound;
@@ -9,8 +11,8 @@ type RecordingItem = {
 };
 
 export default function App() {
-  const [recording, setRecording] = useState<Recording | undefined>(undefined);
-  const [recordings, setRecordings] = useState<RecordingItem[]>([]);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
+  const [recordedAudio, setRecordedAudio] = useState<RecordingItem | null>(null);
 
   async function startRecording() {
     try {
@@ -20,10 +22,13 @@ export default function App() {
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+
+        const newRecording = new Audio.Recording();
+        await newRecording.prepareToRecordAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
         );
-        setRecording(recording);
+        await newRecording.startAsync();
+        setRecording(newRecording);
       }
     } catch (err) {
       console.error('Failed to start recording', err);
@@ -33,41 +38,31 @@ export default function App() {
   async function stopRecording() {
     if (!recording) return;
 
-    setRecording(undefined);
-
+    setRecording(null);
     await recording.stopAndUnloadAsync();
 
     const { sound, status } = await recording.createNewLoadedSoundAsync();
-    const newRecording: RecordingItem = {
-      sound,
-      duration: getDurationFormatted((status as AVPlaybackStatus).durationMillis ?? 0),
-      file: recording.getURI(),
-    };
+    let duration = '0:00';
+    if ('isLoaded' in status && status.isLoaded && 'durationMillis' in status && typeof status.durationMillis === 'number') {
+      duration = getDurationFormatted(status.durationMillis);
+    }
+    const file = recording.getURI();
 
-    setRecordings((prev) => [...prev, newRecording]);
+    const newRecordingItem: RecordingItem = { sound, duration, file };
+    setRecordedAudio(newRecordingItem);
+
+    // --- Send audio to external function here ---
+    if (file) {const res = await sendAudioToAPI(file);
+      console.log(res)
+    }
   }
 
   function getDurationFormatted(milliseconds: number) {
-    const minutes = milliseconds / 1000 / 60;
-    const seconds = Math.round((minutes - Math.floor(minutes)) * 60);
+    const minutes = Math.floor(milliseconds / 1000 / 60);
+    const seconds = Math.round((milliseconds / 1000) % 60);
     return seconds < 10
-      ? `${Math.floor(minutes)}:0${seconds}`
-      : `${Math.floor(minutes)}:${seconds}`;
-  }
-
-  function getRecordingLines() {
-    return recordings.map((recordingLine, index) => (
-      <View key={index} style={styles.row}>
-        <Text style={styles.fill}>
-          Recording #{index + 1} | {recordingLine.duration}
-        </Text>
-        <Button onPress={() => recordingLine.sound.replayAsync()} title="Play" />
-      </View>
-    ));
-  }
-
-  function clearRecordings() {
-    setRecordings([]);
+      ? `${minutes}:0${seconds}`
+      : `${minutes}:${seconds}`;
   }
 
   return (
@@ -76,9 +71,13 @@ export default function App() {
         title={recording ? 'Stop Recording' : 'Start Recording'}
         onPress={recording ? stopRecording : startRecording}
       />
-      {getRecordingLines()}
-      {recordings.length > 0 && (
-        <Button title="Clear Recordings" onPress={clearRecordings} />
+
+      {recordedAudio && (
+        <View style={styles.row}>
+          <Text style={styles.fill}>Duration: {recordedAudio.duration}</Text>
+          <Button onPress={() => recordedAudio.sound.replayAsync()} title="Play" />
+          <Button onPress={() => setRecordedAudio(null)} title="Clear Recording" />
+        </View>
       )}
     </View>
   );
