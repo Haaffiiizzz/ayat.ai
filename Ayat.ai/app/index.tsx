@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
+import { FontAwesome } from '@expo/vector-icons';
+
 
 type RecordingItem = {
   sound: Audio.Sound;
@@ -20,9 +22,11 @@ export default function App() {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedAudio, setRecordedAudio] = useState<RecordingItem | null>(null);
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
+  const [loading, setLoading] = useState(false);
 
 
   async function startRecording() {
+    setApiResponse(null)
     try {
       const perm = await Audio.requestPermissionsAsync();
       if (perm.status === 'granted') {
@@ -31,6 +35,7 @@ export default function App() {
           playsInSilentModeIOS: true,
         });
 
+        
         const newRecording = new Audio.Recording();
         await newRecording.prepareToRecordAsync(
           Audio.RecordingOptionsPresets.HIGH_QUALITY
@@ -60,8 +65,11 @@ export default function App() {
     setRecordedAudio(newRecordingItem);
 
     //Call API and setresponse
-    if (file) {const response = await sendAudioToAPI(file);
-      setApiResponse(response)
+    if (file) {
+      setLoading(true);
+      const response = await sendAudioToAPI(file);
+      setApiResponse(response);
+      setLoading(false);
     }
   }
 
@@ -75,13 +83,19 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Button
-        title={recording ? 'Stop Recording' : 'Start Recording'}
+      <TouchableOpacity
         onPress={recording ? stopRecording : startRecording}
-        color="#007AFF" // optional: iOS blue
-      />
+        style={[
+          styles.micButton,
+          recording ? styles.micButtonActive : null,
+        ]}
+      >
+        <Text style={styles.micIcon}><FontAwesome name="microphone" size={40} color="white" />
+</Text>
+      </TouchableOpacity>
 
-      {recordedAudio && (
+
+      {/* {recordedAudio && (
         <View style={styles.audioControls}>
           <Text style={styles.durationText}>
             Duration: {recordedAudio.duration}
@@ -92,7 +106,15 @@ export default function App() {
             <Button onPress={() => setRecordedAudio(null)} title="Clear Recording" />
           </View>
         </View>
-      )}
+      )} */}
+
+      {loading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={styles.loadingText}>Analyzing your recitation...</Text>
+        </View>
+)}
+
 
       {apiResponse && (
         <View style={styles.responseContainer}>
@@ -108,7 +130,7 @@ export default function App() {
           </View>
           <View style={styles.responseSection}>
             <Text style={styles.arabicText}>
-              {apiResponse.Verse} :الآية
+              {apiResponse.Verse}
             </Text>
           </View>
         </View>
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     lineHeight: 28,
   },
-  
+
   audioControls: {
   marginTop: 20,
   alignItems: 'center',
@@ -193,5 +215,45 @@ const styles = StyleSheet.create({
   spacer: {
     width: 12,
   },
+
+  micButton: {
+  width: 200,
+  height: 200,
+  borderRadius: 100,
+  backgroundColor: '#007AFF',
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginVertical: 20,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.3,
+  shadowRadius: 4,
+  elevation: 5,
+  },
+
+  micButtonActive: {
+    backgroundColor: '#FF3B30', // red when recording
+  },
+
+  micIcon: {
+    fontSize: 40,
+    color: '#fff',
+  }, 
+
+  loadingContainer: {
+  marginTop: 20,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+
+loadingText: {
+  marginTop: 10,
+  fontSize: 16,
+  color: '#007AFF',
+  fontWeight: '600',
+  fontStyle: 'italic',
+}
+
+
 
 });
