@@ -116,7 +116,7 @@ export default function App() {
 )}
 
 
-      {apiResponse && (
+      {apiResponse && apiResponse.Surah && (
         <View style={styles.responseContainer}>
           <View style={styles.responseSection}>
             <Text style={styles.responseText}>
@@ -135,6 +135,12 @@ export default function App() {
           </View>
         </View>
       )}
+
+      {apiResponse && !(apiResponse?.Surah && apiResponse?.Ayah && apiResponse?.Verse) && (
+        <Text style={styles.errorText}>Cannot find this verse!</Text>
+      )}
+
+
     </View>
   );
 }
@@ -252,7 +258,15 @@ loadingText: {
   color: '#007AFF',
   fontWeight: '600',
   fontStyle: 'italic',
-}
+}, 
+ errorText: {
+    backgroundColor: '#ffe5e5',
+    color: '#b30000',
+    padding: 10,
+    borderRadius: 8,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 
 
 
