@@ -1,6 +1,5 @@
 export async function sendAudioToAPI(file: string) {
   try {
-    console.log("entered api");
 
     const formData = new FormData();
     formData.append('audioFile', {
@@ -21,7 +20,6 @@ export async function sendAudioToAPI(file: string) {
     }
 
     const data = await response.json();
-    console.log("data", data);
     return data;
 
   } catch (error) {

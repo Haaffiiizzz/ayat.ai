@@ -13,9 +13,7 @@ type RecordingItem = {
 };
 
 type APIResponse = {
-  Verse: string;
-  Ayah: string;
-  Surah: string;
+  "SurahInfo": string, "VerseNumber": number, "VerseArabic": string, "VerseEnglish": string
 }
 
 export default function App() {
@@ -116,27 +114,39 @@ export default function App() {
 )}
 
 
-      {apiResponse && apiResponse.Surah && (
-        <View style={styles.responseContainer}>
-          <View style={styles.responseSection}>
-            <Text style={styles.responseText}>
-              Surah Number: {apiResponse.Surah}
-            </Text>
+      {apiResponse && apiResponse.SurahInfo && (
+        <View style={styles.responseCard}>
+
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Surah</Text>
+            <Text style={styles.responseValue}>{apiResponse.SurahInfo}</Text>
           </View>
-          <View style={styles.responseSection}>
-            <Text style={styles.responseText}>
-              Ayah Number: {apiResponse.Ayah}
-            </Text>
+
+          <View style={styles.divider} />
+
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Ayah</Text>
+            <Text style={styles.responseValue}>{apiResponse.VerseNumber}</Text>
           </View>
-          <View style={styles.responseSection}>
-            <Text style={styles.arabicText}>
-              {apiResponse.Verse}
-            </Text>
+
+          <View style={styles.divider} />
+
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Verse</Text>
+            <Text style={styles.arabicText}>{apiResponse.VerseArabic}</Text>
+          </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Translation</Text>
+            <Text style={styles.responseValue}>{apiResponse.VerseEnglish}</Text>
           </View>
         </View>
       )}
 
-      {apiResponse && !(apiResponse?.Surah && apiResponse?.Ayah && apiResponse?.Verse) && (
+
+      {apiResponse && !(apiResponse?.SurahInfo && apiResponse?.VerseArabic && apiResponse?.VerseNumber) && (
         <Text style={styles.errorText}>Cannot find this verse!</Text>
       )}
 
@@ -169,42 +179,55 @@ const styles = StyleSheet.create({
     margin: 15,
   },
 
-  responseContainer: {
+  responseCard: {
+    width: '90%',
     marginTop: 20,
-    paddingHorizontal: 20,
-    alignSelf: 'stretch',
-    alignItems: 'center'
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#eaeaea',
+    backgroundColor: '#f9f9f9',
   },
 
-  responseSection: {
-  marginBottom: 8,
-  backgroundColor: '#f9f9f9',
-  padding: 10,
-  borderRadius: 8,
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-  elevation: 2,
+  responseRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 6,
   },
 
-  responseText: {
+  responseLabel: {
+    width: 90,              // fixed label column
+    fontSize: 14,
+    color: '#6b7280',
+    paddingTop: 2,
+  },
+
+  responseValue: {
+    flex: 1,                // value takes remaining space
     fontSize: 16,
-    marginBottom: 4,
-    textAlign: 'left',
+    fontWeight: '600',
+    color: '#111827',
+},
+
+  divider: {
+    height: 1,
+    backgroundColor: '#f0f0f0',
+    marginVertical: 6,
   },
 
   arabicText: {
     fontSize: 20,
     writingDirection: 'rtl',
     textAlign: 'right',
-    marginTop: 10,
     lineHeight: 28,
+    marginTop: 8,
+    flex: 1,
   },
 
   audioControls: {
-  marginTop: 20,
-  alignItems: 'center',
+    marginTop: 20,
+    alignItems: 'center',
   },
 
   durationText: {
@@ -259,14 +282,15 @@ loadingText: {
   fontWeight: '600',
   fontStyle: 'italic',
 }, 
- errorText: {
-    backgroundColor: '#ffe5e5',
-    color: '#b30000',
-    padding: 10,
-    borderRadius: 8,
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
+errorText: {
+  backgroundColor: '#ffe5e5',
+  color: '#b30000',
+  padding: 10,
+  borderRadius: 8,
+  textAlign: 'center',
+  fontWeight: 'bold',
+  marginTop: 20,
+},
 
 
 
