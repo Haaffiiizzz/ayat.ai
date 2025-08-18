@@ -27,3 +27,26 @@ export async function sendAudioToAPI(file: string) {
     return null;
   }
 }
+
+export async function keywordSearch(keyword: string) {
+  try {
+    const response = await fetch(`http://10.0.0.74:8000/searchkeyword?keyword=${keyword}`, {
+        method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API error (${response.status}):`, errorText);
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Request failed:", error);
+    return null;
+  }
+
+}
+
