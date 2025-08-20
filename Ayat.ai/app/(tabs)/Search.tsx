@@ -1,6 +1,6 @@
 import { Text, TextInput, ScrollView, StyleSheet, Button, View} from "react-native";
 import { keywordSearch } from "@/utils/helper";
-import React , { useState } from "react";
+import React , { useState, useEffect } from "react";
 import Highlighted from "@/utils/highlighted";
 
 type verseDetails = {
@@ -11,11 +11,22 @@ type verseDetails = {
 export default function Search () {
     const [keyword, onChangeKeyword] = useState('');
     const [searchResult, setSearchResult] = useState<Array<any> | null>([])
+    const [numResults, setNumResults] = useState<Number | null>(5)
+    const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
+    
 
     const getSearchFromKeyword = async (keyword: string) => {
         const result = await keywordSearch(keyword); //from @utils/helper
         setSearchResult(result)
     }
+
+    useEffect( 
+      () => {
+        setDisplayedResults(searchResult ? searchResult.slice(0, Number(numResults)) : null)
+      }, [searchResult, numResults]
+    )
+
+
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: "center"}}>
             <TextInput
@@ -30,15 +41,15 @@ export default function Search () {
               }} 
             />
 
-            {searchResult && (
+            {searchResult && searchResult.length > 0 && (
                 <View style={styles.resultsInfo}>
                     <Text style={styles.resultsLabel}>Number of results</Text>
                     <Text style={styles.resultsValue}>{searchResult.length}</Text>
                 </View>
             )}
 
-            { searchResult && 
-                searchResult.map((verse: verseDetails, index) => {
+            { displayedResults && 
+                displayedResults.map((verse: verseDetails, index) => {
                     return (
                         <View key={index} style={styles.responseCard}>
                             <View style={styles.responseRow}>
