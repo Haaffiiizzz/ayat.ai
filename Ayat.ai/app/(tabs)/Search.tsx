@@ -18,13 +18,16 @@ export default function Search () {
     const getSearchFromKeyword = async (keyword: string) => {
         const result = await keywordSearch(keyword); //from @utils/helper
         setSearchResult(result)
-        const resultLength = searchResult ? searchResult.length : 0;
-        setNumResults(resultLength > 5 ? 5 : resultLength)
+        const resultLength = result ? result.length : 0;
+        
+        const newNumResults = resultLength >= 5 ? 5 : resultLength
+        setNumResults(newNumResults)
     }
 
     useEffect( 
       () => {
-        setDisplayedResults(searchResult ? searchResult.slice(0, Number(numResults)) : null)
+        const newDisplayedResults = searchResult ? searchResult.slice(0, Number(numResults)) : null
+        setDisplayedResults(newDisplayedResults)
       }, [searchResult, numResults]
     )
 
@@ -46,6 +49,7 @@ export default function Search () {
             {
               searchResult === null && <Text>No results found!</Text>
             }
+
             {searchResult && searchResult.length > 0 && (
                 <View style={styles.resultsInfo}>
                     <Text style={styles.resultsLabel}>Number of results</Text>
@@ -85,14 +89,15 @@ export default function Search () {
                         </View>
                     )
                 })
+            }
 
-                && 
-                <Button
+            { numResults < searchResult?.length &&
+              <Button
                   title="Show More Results" 
                   onPress={ async () => { setNumResults(numResults + 5)
                   }} 
-            />
-            }
+            /> }
+              
 
             
         </ScrollView>
