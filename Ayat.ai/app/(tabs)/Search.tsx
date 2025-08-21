@@ -11,13 +11,15 @@ type verseDetails = {
 export default function Search () {
     const [keyword, onChangeKeyword] = useState('');
     const [searchResult, setSearchResult] = useState<Array<any> | null>([])
-    const [numResults, setNumResults] = useState<Number | null>(5)
+    const [numResults, setNumResults] = useState<number | null>(0)
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
     
 
     const getSearchFromKeyword = async (keyword: string) => {
         const result = await keywordSearch(keyword); //from @utils/helper
         setSearchResult(result)
+        const resultLength = searchResult ? searchResult.length : 0;
+        setNumResults(resultLength > 5 ? 5 : resultLength)
     }
 
     useEffect( 
@@ -41,6 +43,9 @@ export default function Search () {
               }} 
             />
 
+            {
+              searchResult === null && <Text>No results found!</Text>
+            }
             {searchResult && searchResult.length > 0 && (
                 <View style={styles.resultsInfo}>
                     <Text style={styles.resultsLabel}>Number of results</Text>
@@ -48,7 +53,7 @@ export default function Search () {
                 </View>
             )}
 
-            { displayedResults && 
+            { displayedResults && displayedResults.length > 0 &&
                 displayedResults.map((verse: verseDetails, index) => {
                     return (
                         <View key={index} style={styles.responseCard}>
@@ -80,7 +85,16 @@ export default function Search () {
                         </View>
                     )
                 })
+
+                && 
+                <Button
+                  title="Show More Results" 
+                  onPress={ async () => { setNumResults(numResults + 5)
+                  }} 
+            />
             }
+
+            
         </ScrollView>
         
     )
