@@ -14,10 +14,13 @@ export default function Search () {
     const [searchResult, setSearchResult] = useState<Array<any> | null>([])
     const [numResults, setNumResults] = useState<number | null>(0)
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     
 
     const getSearchFromKeyword = async (keyword: string) => {
+        setIsLoading(true)
         const result = await embeddingSearch(keyword); //from @utils/helper
+        setIsLoading(false)
         setSearchResult(result)
         const resultLength = result ? result.length : 0;
         
@@ -46,6 +49,8 @@ export default function Search () {
               onPress={ async () => { getSearchFromKeyword(keyword)
               }} 
             />
+
+            {isLoading && <Text>Loading...</Text>}
 
             {
               searchResult === null && <Text>No results found!</Text>

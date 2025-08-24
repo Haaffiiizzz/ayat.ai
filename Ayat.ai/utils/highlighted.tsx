@@ -33,7 +33,7 @@ function Highlighted({ text, query }: { text: string; query: string }) {
         ) : (
           <Text key={i}>{part}</Text>
         )
-      )}
+      )}.
     </Text>
   );
 }
