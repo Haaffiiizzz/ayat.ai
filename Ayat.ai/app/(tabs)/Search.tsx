@@ -1,11 +1,12 @@
 import { Text, TextInput, ScrollView, StyleSheet, Button, View} from "react-native";
-import { keywordSearch } from "@/utils/helper";
+import { keywordSearch, embeddingSearch } from "@/utils/helper";
 import React , { useState, useEffect } from "react";
 import Highlighted from "@/utils/highlighted";
 
 type verseDetails = {
-  "SurahNumber": string, "VerseNumber": number, "VerseArabic": string, "VerseEnglish": string
+  "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string
 }
+
 
 
 export default function Search () {
@@ -16,11 +17,11 @@ export default function Search () {
     
 
     const getSearchFromKeyword = async (keyword: string) => {
-        const result = await keywordSearch(keyword); //from @utils/helper
+        const result = await embeddingSearch(keyword); //from @utils/helper
         setSearchResult(result)
         const resultLength = result ? result.length : 0;
         
-        const newNumResults = resultLength >= 5 ? 5 : resultLength
+        const newNumResults = resultLength >= 10 ? 10 : resultLength
         setNumResults(newNumResults)
     }
 
@@ -77,7 +78,7 @@ export default function Search () {
                 
                             <View style={styles.responseRow}>
                                 <Text style={styles.responseLabel}>Verse</Text>
-                                <Text style={styles.arabicText}>{verse.VerseArabic}</Text>
+                                <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
                             </View>
                 
                             <View style={styles.divider} />
@@ -94,7 +95,7 @@ export default function Search () {
             { numResults < searchResult?.length &&
               <Button
                   title="Show More Results" 
-                  onPress={ async () => { setNumResults(numResults + 5)
+                  onPress={ async () => { setNumResults(numResults + 10)
                   }} 
             /> }
               

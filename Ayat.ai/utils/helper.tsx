@@ -50,3 +50,25 @@ export async function keywordSearch(keyword: string) {
 
 }
 
+export async function embeddingSearch(query: string) {
+  try {
+    const response = await fetch(`http://10.0.0.74:8000/searchembedding?query=${query}`, {
+        method: 'GET',
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API error (${response.status}):`, errorText);
+      return null;
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Request failed:", error);
+    return null;
+  }
+  
+}
+
