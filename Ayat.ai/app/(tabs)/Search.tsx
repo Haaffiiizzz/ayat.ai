@@ -1,13 +1,11 @@
 import { Text, TextInput, ScrollView, StyleSheet, Button, View} from "react-native";
 import { keywordSearch, embeddingSearch } from "@/utils/helper";
 import React , { useState, useEffect } from "react";
-import Highlighted from "@/utils/highlighted";
+import VerseResult from "@/components/VerseResult";
 
 type verseDetails = {
-  "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string
+  "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
 }
-
-
 
 export default function Search () {
     const [keyword, onChangeKeyword] = useState('');
@@ -63,38 +61,10 @@ export default function Search () {
                 </View>
             )}
 
-            { displayedResults && displayedResults.length > 0 &&
-                displayedResults.map((verse: verseDetails, index) => {
-                    return (
-                        <View key={index} style={styles.responseCard}>
-                            <View style={styles.responseRow}>
-                                <Text style={styles.responseLabel}>Surah</Text>
-                                <Text style={styles.responseValue}>{verse.SurahNumber}</Text>
-                            </View>
-                
-                            <View style={styles.divider} />
-                
-                            <View style={styles.responseRow}>
-                                <Text style={styles.responseLabel}>Ayah</Text>
-                                <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
-                            </View>
-                
-                            <View style={styles.divider} />
-                
-                            <View style={styles.responseRow}>
-                                <Text style={styles.responseLabel}>Verse</Text>
-                                <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
-                            </View>
-                
-                            <View style={styles.divider} />
-                
-                            <View style={styles.responseRow}>
-                                <Text style={styles.responseLabel}>Translation</Text>
-                                <Highlighted text={verse.VerseEnglish} query={keyword} />
-                            </View>
-                        </View>
-                    )
-                })
+            {displayedResults && displayedResults.length > 0 &&
+              displayedResults.map((verse: verseDetails, index) => (
+                <VerseResult key={index} verse={verse} keyword={keyword} />
+              ))
             }
 
             { numResults < searchResult?.length &&

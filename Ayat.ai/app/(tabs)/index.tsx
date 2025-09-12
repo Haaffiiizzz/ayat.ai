@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator } f
 import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
-
+import VerseResult from '@/components/VerseResult';
 
 type RecordingItem = {
   sound: Audio.Sound;
@@ -13,7 +13,7 @@ type RecordingItem = {
 };
 
 type APIResponse = {
-  "SurahInfo": string, "VerseNumber": number, "VerseArabic": string, "VerseEnglish": string
+  "SurahInfo": string, "VerseNumber": number, "VerseArabic": string, "VerseEnglish": string, "VerseIndex": number
 }
 
 export default function App() {
@@ -115,35 +115,16 @@ export default function App() {
 
 
       {apiResponse && apiResponse.SurahInfo && (
-        <View style={styles.responseCard}>
-
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Surah</Text>
-            <Text style={styles.responseValue}>{apiResponse.SurahInfo}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Ayah</Text>
-            <Text style={styles.responseValue}>{apiResponse.VerseNumber}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Verse</Text>
-            <Text style={styles.arabicText}>{apiResponse.VerseArabic}</Text>
-          </View>
-
-          <View style={styles.divider} />
-
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Translation</Text>
-            <Text style={styles.responseValue}>{apiResponse.VerseEnglish}</Text>
-          </View>
-        </View>
-      )}
+      <VerseResult
+        verse={{
+          SurahNumber: apiResponse.SurahInfo,
+          VerseNumber: apiResponse.VerseNumber,
+          VerseWithHarakat: apiResponse.VerseArabic,
+          VerseEnglish: apiResponse.VerseEnglish,
+          VerseIndex: 0, // or some default if not provided
+        }}// or "" if you don’t want highlighting
+      />
+    )}
 
 
       {apiResponse && !(apiResponse?.SurahInfo && apiResponse?.VerseArabic && apiResponse?.VerseNumber) && (
