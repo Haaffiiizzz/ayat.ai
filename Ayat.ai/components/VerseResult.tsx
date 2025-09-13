@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Highlighted from "@/utils/highlighted";
+import Verses from "@/utils/Verses.json"; // Import your Verses.json
 
 type VerseDetails = {
   SurahNumber: number | string;
@@ -16,29 +17,44 @@ type Props = {
 };
 
 export default function VerseResult({ verse, keyword }: Props) {
+  // Get previous and next verses by index
+  const prevVerse = Verses[verse.VerseIndex - 1];
+  const nextVerse = Verses[verse.VerseIndex + 1];
+
+  console.log("Current:", verse);
+  console.log("Prev:", prevVerse);
+  console.log("Next:", nextVerse);
   return (
+    
     <View style={styles.responseCard}>
+
+      {/* Previous Verse */}
+      {prevVerse && (
+        <>
+          <View style={styles.divider} />
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Previous</Text>
+            <Text style={styles.arabicText}>{prevVerse.VerseWithHarakat}</Text>
+          </View>
+        </>
+      )}
+
+      {/* Current Verse */}
       <View style={styles.responseRow}>
         <Text style={styles.responseLabel}>Surah</Text>
         <Text style={styles.responseValue}>{verse.SurahNumber}</Text>
       </View>
-
       <View style={styles.divider} />
-
       <View style={styles.responseRow}>
         <Text style={styles.responseLabel}>Ayah</Text>
         <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
       </View>
-
       <View style={styles.divider} />
-
       <View style={styles.responseRow}>
         <Text style={styles.responseLabel}>Verse</Text>
         <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
       </View>
-
       <View style={styles.divider} />
-
       <View style={styles.responseRow}>
         <Text style={styles.responseLabel}>Translation</Text>
         {keyword ? (
@@ -47,6 +63,19 @@ export default function VerseResult({ verse, keyword }: Props) {
           <Text style={styles.responseValue}>{verse.VerseEnglish}</Text>
         )}
       </View>
+
+      
+
+      {/* Next Verse */}
+      {nextVerse && (
+        <>
+          <View style={styles.divider} />
+          <View style={styles.responseRow}>
+            <Text style={styles.responseLabel}>Next</Text>
+            <Text style={styles.arabicText}>{nextVerse.VerseWithHarakat}</Text>
+          </View>
+        </>
+      )}
     </View>
   );
 }
@@ -98,3 +127,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+

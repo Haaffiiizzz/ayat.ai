@@ -121,7 +121,7 @@ export default function App() {
           VerseNumber: apiResponse.VerseNumber,
           VerseWithHarakat: apiResponse.VerseArabic,
           VerseEnglish: apiResponse.VerseEnglish,
-          VerseIndex: 0, // or some default if not provided
+          VerseIndex: apiResponse.VerseIndex, // or some default if not provided
         }}// or "" if you don’t want highlighting
       />
     )}
