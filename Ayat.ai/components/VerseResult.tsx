@@ -28,53 +28,52 @@ export default function VerseResult({ verse, keyword }: Props) {
     
     <View style={styles.responseCard}>
 
-      {/* Previous Verse */}
       {prevVerse && (
-        <>
-          <View style={styles.divider} />
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Previous</Text>
-            <Text style={styles.arabicText}>{prevVerse.VerseWithHarakat}</Text>
-          </View>
-        </>
+        <View style={[styles.verseBlock, styles.prevNextBlock]}>
+          <Text style={styles.prevNextLabel}>Previous</Text>
+          <Text style={styles.arabicText}>{prevVerse.VerseWithHarakat}</Text>
+          <Text style={styles.responseValue}>{prevVerse.VerseEnglish}</Text>
+        </View>
       )}
 
       {/* Current Verse */}
-      <View style={styles.responseRow}>
-        <Text style={styles.responseLabel}>Surah</Text>
-        <Text style={styles.responseValue}>{verse.SurahNumber}</Text>
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.responseRow}>
-        <Text style={styles.responseLabel}>Ayah</Text>
-        <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.responseRow}>
-        <Text style={styles.responseLabel}>Verse</Text>
-        <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.responseRow}>
-        <Text style={styles.responseLabel}>Translation</Text>
-        {keyword ? (
-          <Highlighted text={verse.VerseEnglish} query={keyword} />
-        ) : (
-          <Text style={styles.responseValue}>{verse.VerseEnglish}</Text>
-        )}
+      <View style={styles.currentBlock}>
+        <View style={styles.responseRow}>
+          <Text style={styles.responseLabel}>Surah</Text>
+          <Text style={styles.responseValue}>{verse.SurahNumber}</Text>
+        </View>
+
+        <View style={styles.divider} />
+        <View style={styles.responseRow}>
+          <Text style={styles.responseLabel}>Ayah</Text>
+          <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
+        </View>
+
+        <View style={styles.divider} />
+        <View style={styles.responseRow}>
+          <Text style={styles.responseLabel}>Verse</Text>
+          <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
+        </View>
+
+        <View style={styles.divider} />
+        <View style={styles.responseRow}>
+          <Text style={styles.responseLabel}>Translation</Text>
+          {keyword ? (
+            <Highlighted text={verse.VerseEnglish} query={keyword} />
+          ) : (
+            <Text style={styles.responseValue}>{verse.VerseEnglish}</Text>
+          )}
+        </View>
       </View>
 
       
 
-      {/* Next Verse */}
       {nextVerse && (
-        <>
-          <View style={styles.divider} />
-          <View style={styles.responseRow}>
-            <Text style={styles.responseLabel}>Next</Text>
-            <Text style={styles.arabicText}>{nextVerse.VerseWithHarakat}</Text>
-          </View>
-        </>
+        <View style={[styles.verseBlock, styles.prevNextBlock]}>
+          <Text style={styles.prevNextLabel}>Next</Text>
+          <Text style={styles.arabicText}>{nextVerse.VerseWithHarakat}</Text>
+          <Text style={styles.responseValue}>{nextVerse.VerseEnglish}</Text>
+        </View>
       )}
     </View>
   );
@@ -101,7 +100,8 @@ const styles = StyleSheet.create({
   responseLabel: {
     width: 90,
     fontSize: 14,
-    color: "#6b7280",
+    color: "black",
+    fontWeight: "bold",
     paddingTop: 2,
   },
 
@@ -126,5 +126,29 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flex: 1,
   },
+
+  verseBlock: {
+  paddingVertical: 8,
+},
+
+currentBlock: {
+  backgroundColor: "#fff8dc", // light highlight
+  borderRadius: 8,
+  padding: 8,
+  marginVertical: 10,
+},
+
+prevNextBlock: {
+  backgroundColor: "#f0f0f0", // subtle gray for context
+  borderRadius: 8,
+  padding: 8,
+},
+
+prevNextLabel: {
+  color: "black",
+  fontWeight: "bold",
+  fontSize: 16,
+}
+  
 });
 
