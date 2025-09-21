@@ -4,12 +4,17 @@ import Highlighted from "@/utils/highlighted";
 import Verses from "@/utils/Verses.json"; // Import your Verses.json
 
 type VerseDetails = {
-  SurahNumber: number | string;
-  VerseNumber: number;
-  VerseWithHarakat: string;
-  VerseEnglish: string;
-  VerseIndex: number;
-};
+        "VerseID": string,
+        "SurahNumber": number,
+        "VerseNumber": number,
+        "SurahNameArabic": string,
+        "SurahNameTransliteration": string,
+        "SurahNameEnglish": string,
+        "VerseWithHarakat": string,
+        "VerseWithoutHarakat": string,
+        "VerseEnglish": string,
+        "VerseIndex": number
+}
 
 type Props = {
   verse: VerseDetails;
@@ -21,9 +26,7 @@ export default function VerseResult({ verse, keyword }: Props) {
   const prevVerse = Verses[verse.VerseIndex - 1];
   const nextVerse = Verses[verse.VerseIndex + 1];
 
-  console.log("Current:", verse);
-  console.log("Prev:", prevVerse);
-  console.log("Next:", nextVerse);
+
   return (
     
     <View style={styles.responseCard}>
@@ -36,7 +39,7 @@ export default function VerseResult({ verse, keyword }: Props) {
         </View>
       )}
 
-      {/* Current Verse */}
+      {/* Current Verse */}         
       <View style={styles.currentBlock}>
         <View style={styles.responseRow}>
           <Text style={styles.responseLabel}>Surah</Text>
