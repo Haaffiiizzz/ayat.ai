@@ -1,0 +1,686 @@
+[
+    {
+        "SurahNameArabic": "الفاتحة",
+        "SurahNameTransliteration": "Al-Fatihah",
+        "SurahNameEnglish": "The Opener",
+        "SurahInfo": "1. Al-Fatihah - The Opener"
+    },
+    {
+        "SurahNameArabic": "البقرة",
+        "SurahNameTransliteration": "Al-Baqarah",
+        "SurahNameEnglish": "The Cow",
+        "SurahInfo": "2. Al-Baqarah - The Cow"
+    },
+    {
+        "SurahNameArabic": "آل عمران",
+        "SurahNameTransliteration": "Ali 'Imran",
+        "SurahNameEnglish": "Family of Imran",
+        "SurahInfo": "3. Ali 'Imran - Family of Imran"
+    },
+    {
+        "SurahNameArabic": "النساء",
+        "SurahNameTransliteration": "An-Nisa",
+        "SurahNameEnglish": "The Women",
+        "SurahInfo": "4. An-Nisa - The Women"
+    },
+    {
+        "SurahNameArabic": "المائدة",
+        "SurahNameTransliteration": "Al-Ma'idah",
+        "SurahNameEnglish": "The Table Spread",
+        "SurahInfo": "5. Al-Ma'idah - The Table Spread"
+    },
+    {
+        "SurahNameArabic": "الأنعام",
+        "SurahNameTransliteration": "Al-An'am",
+        "SurahNameEnglish": "The Cattle",
+        "SurahInfo": "6. Al-An'am - The Cattle"
+    },
+    {
+        "SurahNameArabic": "الأعراف",
+        "SurahNameTransliteration": "Al-A'raf",
+        "SurahNameEnglish": "The Heights",
+        "SurahInfo": "7. Al-A'raf - The Heights"
+    },
+    {
+        "SurahNameArabic": "الأنفال",
+        "SurahNameTransliteration": "Al-Anfal",
+        "SurahNameEnglish": "The Spoils of War",
+        "SurahInfo": "8. Al-Anfal - The Spoils of War"
+    },
+    {
+        "SurahNameArabic": "التوبة",
+        "SurahNameTransliteration": "At-Tawbah",
+        "SurahNameEnglish": "The Repentance",
+        "SurahInfo": "9. At-Tawbah - The Repentance"
+    },
+    {
+        "SurahNameArabic": "يونس",
+        "SurahNameTransliteration": "Yunus",
+        "SurahNameEnglish": "Jonah",
+        "SurahInfo": "10. Yunus - Jonah"
+    },
+    {
+        "SurahNameArabic": "هود",
+        "SurahNameTransliteration": "Hud",
+        "SurahNameEnglish": "Hud",
+        "SurahInfo": "11. Hud - Hud"
+    },
+    {
+        "SurahNameArabic": "يوسف",
+        "SurahNameTransliteration": "Yusuf",
+        "SurahNameEnglish": "Joseph",
+        "SurahInfo": "12. Yusuf - Joseph"
+    },
+    {
+        "SurahNameArabic": "الرعد",
+        "SurahNameTransliteration": "Ar-Ra'd",
+        "SurahNameEnglish": "The Thunder",
+        "SurahInfo": "13. Ar-Ra'd - The Thunder"
+    },
+    {
+        "SurahNameArabic": "ابراهيم",
+        "SurahNameTransliteration": "Ibrahim",
+        "SurahNameEnglish": "Abraham",
+        "SurahInfo": "14. Ibrahim - Abraham"
+    },
+    {
+        "SurahNameArabic": "الحجر",
+        "SurahNameTransliteration": "Al-Hijr",
+        "SurahNameEnglish": "The Rocky Tract",
+        "SurahInfo": "15. Al-Hijr - The Rocky Tract"
+    },
+    {
+        "SurahNameArabic": "النحل",
+        "SurahNameTransliteration": "An-Nahl",
+        "SurahNameEnglish": "The Bee",
+        "SurahInfo": "16. An-Nahl - The Bee"
+    },
+    {
+        "SurahNameArabic": "الإسراء",
+        "SurahNameTransliteration": "Al-Isra",
+        "SurahNameEnglish": "The Night Journey",
+        "SurahInfo": "17. Al-Isra - The Night Journey"
+    },
+    {
+        "SurahNameArabic": "الكهف",
+        "SurahNameTransliteration": "Al-Kahf",
+        "SurahNameEnglish": "The Cave",
+        "SurahInfo": "18. Al-Kahf - The Cave"
+    },
+    {
+        "SurahNameArabic": "مريم",
+        "SurahNameTransliteration": "Maryam",
+        "SurahNameEnglish": "Mary",
+        "SurahInfo": "19. Maryam - Mary"
+    },
+    {
+        "SurahNameArabic": "طه",
+        "SurahNameTransliteration": "Taha",
+        "SurahNameEnglish": "Ta-Ha",
+        "SurahInfo": "20. Taha - Ta-Ha"
+    },
+    {
+        "SurahNameArabic": "الأنبياء",
+        "SurahNameTransliteration": "Al-Anbya",
+        "SurahNameEnglish": "The Prophets",
+        "SurahInfo": "21. Al-Anbya - The Prophets"
+    },
+    {
+        "SurahNameArabic": "الحج",
+        "SurahNameTransliteration": "Al-Hajj",
+        "SurahNameEnglish": "The Pilgrimage",
+        "SurahInfo": "22. Al-Hajj - The Pilgrimage"
+    },
+    {
+        "SurahNameArabic": "المؤمنون",
+        "SurahNameTransliteration": "Al-Mu'minun",
+        "SurahNameEnglish": "The Believers",
+        "SurahInfo": "23. Al-Mu'minun - The Believers"
+    },
+    {
+        "SurahNameArabic": "النور",
+        "SurahNameTransliteration": "An-Nur",
+        "SurahNameEnglish": "The Light",
+        "SurahInfo": "24. An-Nur - The Light"
+    },
+    {
+        "SurahNameArabic": "الفرقان",
+        "SurahNameTransliteration": "Al-Furqan",
+        "SurahNameEnglish": "The Criterion",
+        "SurahInfo": "25. Al-Furqan - The Criterion"
+    },
+    {
+        "SurahNameArabic": "الشعراء",
+        "SurahNameTransliteration": "Ash-Shu'ara",
+        "SurahNameEnglish": "The Poets",
+        "SurahInfo": "26. Ash-Shu'ara - The Poets"
+    },
+    {
+        "SurahNameArabic": "النمل",
+        "SurahNameTransliteration": "An-Naml",
+        "SurahNameEnglish": "The Ant",
+        "SurahInfo": "27. An-Naml - The Ant"
+    },
+    {
+        "SurahNameArabic": "القصص",
+        "SurahNameTransliteration": "Al-Qasas",
+        "SurahNameEnglish": "The Stories",
+        "SurahInfo": "28. Al-Qasas - The Stories"
+    },
+    {
+        "SurahNameArabic": "العنكبوت",
+        "SurahNameTransliteration": "Al-'Ankabut",
+        "SurahNameEnglish": "The Spider",
+        "SurahInfo": "29. Al-'Ankabut - The Spider"
+    },
+    {
+        "SurahNameArabic": "الروم",
+        "SurahNameTransliteration": "Ar-Rum",
+        "SurahNameEnglish": "The Romans",
+        "SurahInfo": "30. Ar-Rum - The Romans"
+    },
+    {
+        "SurahNameArabic": "لقمان",
+        "SurahNameTransliteration": "Luqman",
+        "SurahNameEnglish": "Luqman",
+        "SurahInfo": "31. Luqman - Luqman"
+    },
+    {
+        "SurahNameArabic": "السجدة",
+        "SurahNameTransliteration": "As-Sajdah",
+        "SurahNameEnglish": "The Prostration",
+        "SurahInfo": "32. As-Sajdah - The Prostration"
+    },
+    {
+        "SurahNameArabic": "الأحزاب",
+        "SurahNameTransliteration": "Al-Ahzab",
+        "SurahNameEnglish": "The Combined Forces",
+        "SurahInfo": "33. Al-Ahzab - The Combined Forces"
+    },
+    {
+        "SurahNameArabic": "سبإ",
+        "SurahNameTransliteration": "Saba",
+        "SurahNameEnglish": "Sheba",
+        "SurahInfo": "34. Saba - Sheba"
+    },
+    {
+        "SurahNameArabic": "فاطر",
+        "SurahNameTransliteration": "Fatir",
+        "SurahNameEnglish": "Originator",
+        "SurahInfo": "35. Fatir - Originator"
+    },
+    {
+        "SurahNameArabic": "يس",
+        "SurahNameTransliteration": "Ya-Sin",
+        "SurahNameEnglish": "Ya Sin",
+        "SurahInfo": "36. Ya-Sin - Ya Sin"
+    },
+    {
+        "SurahNameArabic": "الصافات",
+        "SurahNameTransliteration": "As-Saffat",
+        "SurahNameEnglish": "Those who set the Ranks",
+        "SurahInfo": "37. As-Saffat - Those who set the Ranks"
+    },
+    {
+        "SurahNameArabic": "ص",
+        "SurahNameTransliteration": "Sad",
+        "SurahNameEnglish": "The Letter \"Saad\"",
+        "SurahInfo": "38. Sad - The Letter \"Saad\""
+    },
+    {
+        "SurahNameArabic": "الزمر",
+        "SurahNameTransliteration": "Az-Zumar",
+        "SurahNameEnglish": "The Troops",
+        "SurahInfo": "39. Az-Zumar - The Troops"
+    },
+    {
+        "SurahNameArabic": "غافر",
+        "SurahNameTransliteration": "Ghafir",
+        "SurahNameEnglish": "The Forgiver",
+        "SurahInfo": "40. Ghafir - The Forgiver"
+    },
+    {
+        "SurahNameArabic": "فصلت",
+        "SurahNameTransliteration": "Fussilat",
+        "SurahNameEnglish": "Explained in Detail",
+        "SurahInfo": "41. Fussilat - Explained in Detail"
+    },
+    {
+        "SurahNameArabic": "الشورى",
+        "SurahNameTransliteration": "Ash-Shuraa",
+        "SurahNameEnglish": "The Consultation",
+        "SurahInfo": "42. Ash-Shuraa - The Consultation"
+    },
+    {
+        "SurahNameArabic": "الزخرف",
+        "SurahNameTransliteration": "Az-Zukhruf",
+        "SurahNameEnglish": "The Ornaments of Gold",
+        "SurahInfo": "43. Az-Zukhruf - The Ornaments of Gold"
+    },
+    {
+        "SurahNameArabic": "الدخان",
+        "SurahNameTransliteration": "Ad-Dukhan",
+        "SurahNameEnglish": "The Smoke",
+        "SurahInfo": "44. Ad-Dukhan - The Smoke"
+    },
+    {
+        "SurahNameArabic": "الجاثية",
+        "SurahNameTransliteration": "Al-Jathiyah",
+        "SurahNameEnglish": "The Crouching",
+        "SurahInfo": "45. Al-Jathiyah - The Crouching"
+    },
+    {
+        "SurahNameArabic": "الأحقاف",
+        "SurahNameTransliteration": "Al-Ahqaf",
+        "SurahNameEnglish": "The Wind-Curved Sandhills",
+        "SurahInfo": "46. Al-Ahqaf - The Wind-Curved Sandhills"
+    },
+    {
+        "SurahNameArabic": "محمد",
+        "SurahNameTransliteration": "Muhammad",
+        "SurahNameEnglish": "Muhammad",
+        "SurahInfo": "47. Muhammad - Muhammad"
+    },
+    {
+        "SurahNameArabic": "الفتح",
+        "SurahNameTransliteration": "Al-Fath",
+        "SurahNameEnglish": "The Victory",
+        "SurahInfo": "48. Al-Fath - The Victory"
+    },
+    {
+        "SurahNameArabic": "الحجرات",
+        "SurahNameTransliteration": "Al-Hujurat",
+        "SurahNameEnglish": "The Rooms",
+        "SurahInfo": "49. Al-Hujurat - The Rooms"
+    },
+    {
+        "SurahNameArabic": "ق",
+        "SurahNameTransliteration": "Qaf",
+        "SurahNameEnglish": "The Letter \"Qaf\"",
+        "SurahInfo": "50. Qaf - The Letter \"Qaf\""
+    },
+    {
+        "SurahNameArabic": "الذاريات",
+        "SurahNameTransliteration": "Adh-Dhariyat",
+        "SurahNameEnglish": "The Winnowing Winds",
+        "SurahInfo": "51. Adh-Dhariyat - The Winnowing Winds"
+    },
+    {
+        "SurahNameArabic": "الطور",
+        "SurahNameTransliteration": "At-Tur",
+        "SurahNameEnglish": "The Mount",
+        "SurahInfo": "52. At-Tur - The Mount"
+    },
+    {
+        "SurahNameArabic": "النجم",
+        "SurahNameTransliteration": "An-Najm",
+        "SurahNameEnglish": "The Star",
+        "SurahInfo": "53. An-Najm - The Star"
+    },
+    {
+        "SurahNameArabic": "القمر",
+        "SurahNameTransliteration": "Al-Qamar",
+        "SurahNameEnglish": "The Moon",
+        "SurahInfo": "54. Al-Qamar - The Moon"
+    },
+    {
+        "SurahNameArabic": "الرحمن",
+        "SurahNameTransliteration": "Ar-Rahman",
+        "SurahNameEnglish": "The Beneficent",
+        "SurahInfo": "55. Ar-Rahman - The Beneficent"
+    },
+    {
+        "SurahNameArabic": "الواقعة",
+        "SurahNameTransliteration": "Al-Waqi'ah",
+        "SurahNameEnglish": "The Inevitable",
+        "SurahInfo": "56. Al-Waqi'ah - The Inevitable"
+    },
+    {
+        "SurahNameArabic": "الحديد",
+        "SurahNameTransliteration": "Al-Hadid",
+        "SurahNameEnglish": "The Iron",
+        "SurahInfo": "57. Al-Hadid - The Iron"
+    },
+    {
+        "SurahNameArabic": "المجادلة",
+        "SurahNameTransliteration": "Al-Mujadila",
+        "SurahNameEnglish": "The Pleading Woman",
+        "SurahInfo": "58. Al-Mujadila - The Pleading Woman"
+    },
+    {
+        "SurahNameArabic": "الحشر",
+        "SurahNameTransliteration": "Al-Hashr",
+        "SurahNameEnglish": "The Exile",
+        "SurahInfo": "59. Al-Hashr - The Exile"
+    },
+    {
+        "SurahNameArabic": "الممتحنة",
+        "SurahNameTransliteration": "Al-Mumtahanah",
+        "SurahNameEnglish": "She that is to be examined",
+        "SurahInfo": "60. Al-Mumtahanah - She that is to be examined"
+    },
+    {
+        "SurahNameArabic": "الصف",
+        "SurahNameTransliteration": "As-Saf",
+        "SurahNameEnglish": "The Ranks",
+        "SurahInfo": "61. As-Saf - The Ranks"
+    },
+    {
+        "SurahNameArabic": "الجمعة",
+        "SurahNameTransliteration": "Al-Jumu'ah",
+        "SurahNameEnglish": "The Congregation, Friday",
+        "SurahInfo": "62. Al-Jumu'ah - The Congregation, Friday"
+    },
+    {
+        "SurahNameArabic": "المنافقون",
+        "SurahNameTransliteration": "Al-Munafiqun",
+        "SurahNameEnglish": "The Hypocrites",
+        "SurahInfo": "63. Al-Munafiqun - The Hypocrites"
+    },
+    {
+        "SurahNameArabic": "التغابن",
+        "SurahNameTransliteration": "At-Taghabun",
+        "SurahNameEnglish": "The Mutual Disillusion",
+        "SurahInfo": "64. At-Taghabun - The Mutual Disillusion"
+    },
+    {
+        "SurahNameArabic": "الطلاق",
+        "SurahNameTransliteration": "At-Talaq",
+        "SurahNameEnglish": "The Divorce",
+        "SurahInfo": "65. At-Talaq - The Divorce"
+    },
+    {
+        "SurahNameArabic": "التحريم",
+        "SurahNameTransliteration": "At-Tahrim",
+        "SurahNameEnglish": "The Prohibition",
+        "SurahInfo": "66. At-Tahrim - The Prohibition"
+    },
+    {
+        "SurahNameArabic": "الملك",
+        "SurahNameTransliteration": "Al-Mulk",
+        "SurahNameEnglish": "The Sovereignty",
+        "SurahInfo": "67. Al-Mulk - The Sovereignty"
+    },
+    {
+        "SurahNameArabic": "القلم",
+        "SurahNameTransliteration": "Al-Qalam",
+        "SurahNameEnglish": "The Pen",
+        "SurahInfo": "68. Al-Qalam - The Pen"
+    },
+    {
+        "SurahNameArabic": "الحاقة",
+        "SurahNameTransliteration": "Al-Haqqah",
+        "SurahNameEnglish": "The Reality",
+        "SurahInfo": "69. Al-Haqqah - The Reality"
+    },
+    {
+        "SurahNameArabic": "المعارج",
+        "SurahNameTransliteration": "Al-Ma'arij",
+        "SurahNameEnglish": "The Ascending Stairways",
+        "SurahInfo": "70. Al-Ma'arij - The Ascending Stairways"
+    },
+    {
+        "SurahNameArabic": "نوح",
+        "SurahNameTransliteration": "Nuh",
+        "SurahNameEnglish": "Noah",
+        "SurahInfo": "71. Nuh - Noah"
+    },
+    {
+        "SurahNameArabic": "الجن",
+        "SurahNameTransliteration": "Al-Jinn",
+        "SurahNameEnglish": "The Jinn",
+        "SurahInfo": "72. Al-Jinn - The Jinn"
+    },
+    {
+        "SurahNameArabic": "المزمل",
+        "SurahNameTransliteration": "Al-Muzzammil",
+        "SurahNameEnglish": "The Enshrouded One",
+        "SurahInfo": "73. Al-Muzzammil - The Enshrouded One"
+    },
+    {
+        "SurahNameArabic": "المدثر",
+        "SurahNameTransliteration": "Al-Muddaththir",
+        "SurahNameEnglish": "The Cloaked One",
+        "SurahInfo": "74. Al-Muddaththir - The Cloaked One"
+    },
+    {
+        "SurahNameArabic": "القيامة",
+        "SurahNameTransliteration": "Al-Qiyamah",
+        "SurahNameEnglish": "The Resurrection",
+        "SurahInfo": "75. Al-Qiyamah - The Resurrection"
+    },
+    {
+        "SurahNameArabic": "الانسان",
+        "SurahNameTransliteration": "Al-Insan",
+        "SurahNameEnglish": "The Man",
+        "SurahInfo": "76. Al-Insan - The Man"
+    },
+    {
+        "SurahNameArabic": "المرسلات",
+        "SurahNameTransliteration": "Al-Mursalat",
+        "SurahNameEnglish": "The Emissaries",
+        "SurahInfo": "77. Al-Mursalat - The Emissaries"
+    },
+    {
+        "SurahNameArabic": "النبإ",
+        "SurahNameTransliteration": "An-Naba",
+        "SurahNameEnglish": "The Tidings",
+        "SurahInfo": "78. An-Naba - The Tidings"
+    },
+    {
+        "SurahNameArabic": "النازعات",
+        "SurahNameTransliteration": "An-Nazi'at",
+        "SurahNameEnglish": "Those who drag forth",
+        "SurahInfo": "79. An-Nazi'at - Those who drag forth"
+    },
+    {
+        "SurahNameArabic": "عبس",
+        "SurahNameTransliteration": "'Abasa",
+        "SurahNameEnglish": "He Frowned",
+        "SurahInfo": "80. 'Abasa - He Frowned"
+    },
+    {
+        "SurahNameArabic": "التكوير",
+        "SurahNameTransliteration": "At-Takwir",
+        "SurahNameEnglish": "The Overthrowing",
+        "SurahInfo": "81. At-Takwir - The Overthrowing"
+    },
+    {
+        "SurahNameArabic": "الإنفطار",
+        "SurahNameTransliteration": "Al-Infitar",
+        "SurahNameEnglish": "The Cleaving",
+        "SurahInfo": "82. Al-Infitar - The Cleaving"
+    },
+    {
+        "SurahNameArabic": "المطففين",
+        "SurahNameTransliteration": "Al-Mutaffifin",
+        "SurahNameEnglish": "The Defrauding",
+        "SurahInfo": "83. Al-Mutaffifin - The Defrauding"
+    },
+    {
+        "SurahNameArabic": "الإنشقاق",
+        "SurahNameTransliteration": "Al-Inshiqaq",
+        "SurahNameEnglish": "The Sundering",
+        "SurahInfo": "84. Al-Inshiqaq - The Sundering"
+    },
+    {
+        "SurahNameArabic": "البروج",
+        "SurahNameTransliteration": "Al-Buruj",
+        "SurahNameEnglish": "The Mansions of the Stars",
+        "SurahInfo": "85. Al-Buruj - The Mansions of the Stars"
+    },
+    {
+        "SurahNameArabic": "الطارق",
+        "SurahNameTransliteration": "At-Tariq",
+        "SurahNameEnglish": "The Nightcommer",
+        "SurahInfo": "86. At-Tariq - The Nightcommer"
+    },
+    {
+        "SurahNameArabic": "الأعلى",
+        "SurahNameTransliteration": "Al-A'la",
+        "SurahNameEnglish": "The Most High",
+        "SurahInfo": "87. Al-A'la - The Most High"
+    },
+    {
+        "SurahNameArabic": "الغاشية",
+        "SurahNameTransliteration": "Al-Ghashiyah",
+        "SurahNameEnglish": "The Overwhelming",
+        "SurahInfo": "88. Al-Ghashiyah - The Overwhelming"
+    },
+    {
+        "SurahNameArabic": "الفجر",
+        "SurahNameTransliteration": "Al-Fajr",
+        "SurahNameEnglish": "The Dawn",
+        "SurahInfo": "89. Al-Fajr - The Dawn"
+    },
+    {
+        "SurahNameArabic": "البلد",
+        "SurahNameTransliteration": "Al-Balad",
+        "SurahNameEnglish": "The City",
+        "SurahInfo": "90. Al-Balad - The City"
+    },
+    {
+        "SurahNameArabic": "الشمس",
+        "SurahNameTransliteration": "Ash-Shams",
+        "SurahNameEnglish": "The Sun",
+        "SurahInfo": "91. Ash-Shams - The Sun"
+    },
+    {
+        "SurahNameArabic": "الليل",
+        "SurahNameTransliteration": "Al-Layl",
+        "SurahNameEnglish": "The Night",
+        "SurahInfo": "92. Al-Layl - The Night"
+    },
+    {
+        "SurahNameArabic": "الضحى",
+        "SurahNameTransliteration": "Ad-Duhaa",
+        "SurahNameEnglish": "The Morning Hours",
+        "SurahInfo": "93. Ad-Duhaa - The Morning Hours"
+    },
+    {
+        "SurahNameArabic": "الشرح",
+        "SurahNameTransliteration": "Ash-Sharh",
+        "SurahNameEnglish": "The Relief",
+        "SurahInfo": "94. Ash-Sharh - The Relief"
+    },
+    {
+        "SurahNameArabic": "التين",
+        "SurahNameTransliteration": "At-Tin",
+        "SurahNameEnglish": "The Fig",
+        "SurahInfo": "95. At-Tin - The Fig"
+    },
+    {
+        "SurahNameArabic": "العلق",
+        "SurahNameTransliteration": "Al-'Alaq",
+        "SurahNameEnglish": "The Clot",
+        "SurahInfo": "96. Al-'Alaq - The Clot"
+    },
+    {
+        "SurahNameArabic": "القدر",
+        "SurahNameTransliteration": "Al-Qadr",
+        "SurahNameEnglish": "The Power",
+        "SurahInfo": "97. Al-Qadr - The Power"
+    },
+    {
+        "SurahNameArabic": "البينة",
+        "SurahNameTransliteration": "Al-Bayyinah",
+        "SurahNameEnglish": "The Clear Proof",
+        "SurahInfo": "98. Al-Bayyinah - The Clear Proof"
+    },
+    {
+        "SurahNameArabic": "الزلزلة",
+        "SurahNameTransliteration": "Az-Zalzalah",
+        "SurahNameEnglish": "The Earthquake",
+        "SurahInfo": "99. Az-Zalzalah - The Earthquake"
+    },
+    {
+        "SurahNameArabic": "العاديات",
+        "SurahNameTransliteration": "Al-'Adiyat",
+        "SurahNameEnglish": "The Courser",
+        "SurahInfo": "100. Al-'Adiyat - The Courser"
+    },
+    {
+        "SurahNameArabic": "القارعة",
+        "SurahNameTransliteration": "Al-Qari'ah",
+        "SurahNameEnglish": "The Calamity",
+        "SurahInfo": "101. Al-Qari'ah - The Calamity"
+    },
+    {
+        "SurahNameArabic": "التكاثر",
+        "SurahNameTransliteration": "At-Takathur",
+        "SurahNameEnglish": "The Rivalry in world increase",
+        "SurahInfo": "102. At-Takathur - The Rivalry in world increase"
+    },
+    {
+        "SurahNameArabic": "العصر",
+        "SurahNameTransliteration": "Al-'Asr",
+        "SurahNameEnglish": "The Declining Day",
+        "SurahInfo": "103. Al-'Asr - The Declining Day"
+    },
+    {
+        "SurahNameArabic": "الهمزة",
+        "SurahNameTransliteration": "Al-Humazah",
+        "SurahNameEnglish": "The Traducer",
+        "SurahInfo": "104. Al-Humazah - The Traducer"
+    },
+    {
+        "SurahNameArabic": "الفيل",
+        "SurahNameTransliteration": "Al-Fil",
+        "SurahNameEnglish": "The Elephant",
+        "SurahInfo": "105. Al-Fil - The Elephant"
+    },
+    {
+        "SurahNameArabic": "قريش",
+        "SurahNameTransliteration": "Quraysh",
+        "SurahNameEnglish": "Quraysh",
+        "SurahInfo": "106. Quraysh - Quraysh"
+    },
+    {
+        "SurahNameArabic": "الماعون",
+        "SurahNameTransliteration": "Al-Ma'un",
+        "SurahNameEnglish": "The Small kindnesses",
+        "SurahInfo": "107. Al-Ma'un - The Small kindnesses"
+    },
+    {
+        "SurahNameArabic": "الكوثر",
+        "SurahNameTransliteration": "Al-Kawthar",
+        "SurahNameEnglish": "The Abundance",
+        "SurahInfo": "108. Al-Kawthar - The Abundance"
+    },
+    {
+        "SurahNameArabic": "الكافرون",
+        "SurahNameTransliteration": "Al-Kafirun",
+        "SurahNameEnglish": "The Disbelievers",
+        "SurahInfo": "109. Al-Kafirun - The Disbelievers"
+    },
+    {
+        "SurahNameArabic": "النصر",
+        "SurahNameTransliteration": "An-Nasr",
+        "SurahNameEnglish": "The Divine Support",
+        "SurahInfo": "110. An-Nasr - The Divine Support"
+    },
+    {
+        "SurahNameArabic": "المسد",
+        "SurahNameTransliteration": "Al-Masad",
+        "SurahNameEnglish": "The Palm Fiber",
+        "SurahInfo": "111. Al-Masad - The Palm Fiber"
+    },
+    {
+        "SurahNameArabic": "الإخلاص",
+        "SurahNameTransliteration": "Al-Ikhlas",
+        "SurahNameEnglish": "The Sincerity",
+        "SurahInfo": "112. Al-Ikhlas - The Sincerity"
+    },
+    {
+        "SurahNameArabic": "الفلق",
+        "SurahNameTransliteration": "Al-Falaq",
+        "SurahNameEnglish": "The Daybreak",
+        "SurahInfo": "113. Al-Falaq - The Daybreak"
+    },
+    {
+        "SurahNameArabic": "الناس",
+        "SurahNameTransliteration": "An-Nas",
+        "SurahNameEnglish": "Mankind",
+        "SurahInfo": "114. An-Nas - Mankind"
+    }
+]
