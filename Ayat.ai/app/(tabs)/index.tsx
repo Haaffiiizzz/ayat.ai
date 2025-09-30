@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
@@ -13,7 +13,16 @@ type RecordingItem = {
 };
 
 type APIResponse = {
-  "SurahInfo": string, "VerseNumber": number, "VerseArabic": string, "VerseEnglish": string, "VerseIndex": number
+        "VerseID": string,
+        "SurahNumber": number,
+        "VerseNumber": number,
+        "SurahNameArabic": string,
+        "SurahNameTransliteration": string,
+        "SurahNameEnglish": string,
+        "VerseWithHarakat": string,
+        "VerseWithoutHarakat": string,
+        "VerseEnglish": string,
+        "VerseIndex": number
 }
 
 export default function App() {
@@ -80,7 +89,7 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
       <TouchableOpacity
         onPress={recording ? stopRecording : startRecording}
         style={[
@@ -114,25 +123,19 @@ export default function App() {
 )}
 
 
-      {apiResponse && apiResponse.SurahInfo && (
+      {apiResponse && apiResponse.VerseID && (
       <VerseResult
-        verse={{
-          SurahNumber: apiResponse.SurahInfo,
-          VerseNumber: apiResponse.VerseNumber,
-          VerseWithHarakat: apiResponse.VerseArabic,
-          VerseEnglish: apiResponse.VerseEnglish,
-          VerseIndex: apiResponse.VerseIndex, 
-        }}
+        verse={apiResponse}
       />
     )}
 
 
-      {apiResponse && !(apiResponse?.SurahInfo && apiResponse?.VerseArabic && apiResponse?.VerseNumber) && (
+      {apiResponse && !(apiResponse?.VerseID && apiResponse?.VerseWithHarakat && apiResponse?.VerseNumber) && (
         <Text style={styles.errorText}>Cannot find this verse!</Text>
       )}
 
 
-    </View>
+    </ScrollView>
   );
 }
 
@@ -143,8 +146,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    
   },
 
   row: {

@@ -1,20 +1,19 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Highlighted from "@/utils/highlighted";
-import Verses from "@/utils/Verses.json"; // Import your Verses.json
-
+import Verses from "@/utils/Verses.json"; 
 type VerseDetails = {
-        "VerseID": string,
-        "SurahNumber": number,
-        "VerseNumber": number,
-        "SurahNameArabic": string,
-        "SurahNameTransliteration": string,
-        "SurahNameEnglish": string,
-        "VerseWithHarakat": string,
-        "VerseWithoutHarakat": string,
-        "VerseEnglish": string,
-        "VerseIndex": number
-}
+  VerseID: string;
+  SurahNumber: number;
+  VerseNumber: number;
+  SurahNameArabic: string;
+  SurahNameTransliteration: string;
+  SurahNameEnglish: string;
+  VerseWithHarakat: string;
+  VerseWithoutHarakat: string;
+  VerseEnglish: string;
+  VerseIndex: number;
+};
 
 type Props = {
   verse: VerseDetails;
@@ -23,23 +22,21 @@ type Props = {
 
 export default function VerseResult({ verse, keyword }: Props) {
   // Get previous and next verses by index
-  const prevVerse = Verses[verse.VerseIndex - 1];
-  const nextVerse = Verses[verse.VerseIndex + 1];
-
+  const index = Number(verse.VerseIndex);
+  const prevVerse = Verses[index - 2]; // im sedning  1 index?
+  const nextVerse = Verses[index + 1];
 
   return (
-    
     <View style={styles.responseCard}>
-
       {prevVerse && (
         <View style={[styles.verseBlock, styles.prevNextBlock]}>
           <Text style={styles.prevNextLabel}>Previous</Text>
           <Text style={styles.arabicText}>{prevVerse.VerseWithHarakat}</Text>
-          <Text style={styles.responseValue}>{prevVerse.VerseEnglish}</Text>
+          <Text style={styles.responseValue}>{prevVerse.VerseEnglish}.</Text>
         </View>
       )}
 
-      {/* Current Verse */}         
+      {/* Current Verse */}
       <View style={styles.currentBlock}>
         <View style={styles.responseRow}>
           <Text style={styles.responseLabel}>Surah</Text>
@@ -52,30 +49,29 @@ export default function VerseResult({ verse, keyword }: Props) {
           <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
         </View>
 
+        {/* FIXED: Verse block should be stacked, not row */}
         <View style={styles.divider} />
-        <View style={styles.responseRow}>
+        <View style={styles.verseBlock}>
           <Text style={styles.responseLabel}>Verse</Text>
           <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
         </View>
 
         <View style={styles.divider} />
-        <View style={styles.responseRow}>
+        <View style={styles.verseBlock}>
           <Text style={styles.responseLabel}>Translation</Text>
           {keyword ? (
             <Highlighted text={verse.VerseEnglish} query={keyword} />
           ) : (
-            <Text style={styles.responseValue}>{verse.VerseEnglish}</Text>
+            <Text style={styles.responseValue}>{verse.VerseEnglish}.</Text>
           )}
         </View>
       </View>
-
-      
 
       {nextVerse && (
         <View style={[styles.verseBlock, styles.prevNextBlock]}>
           <Text style={styles.prevNextLabel}>Next</Text>
           <Text style={styles.arabicText}>{nextVerse.VerseWithHarakat}</Text>
-          <Text style={styles.responseValue}>{nextVerse.VerseEnglish}</Text>
+          <Text style={styles.responseValue}>{nextVerse.VerseEnglish}.</Text>
         </View>
       )}
     </View>
@@ -98,6 +94,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 6,
+    width: "100%",
   },
 
   responseLabel: {
@@ -109,10 +106,10 @@ const styles = StyleSheet.create({
   },
 
   responseValue: {
-    flex: 1,
     fontSize: 16,
     fontWeight: "600",
     color: "#111827",
+    width: "90%",
   },
 
   divider: {
@@ -122,36 +119,35 @@ const styles = StyleSheet.create({
   },
 
   arabicText: {
-    fontSize: 20,
+    fontSize: 22,
     writingDirection: "rtl",
     textAlign: "right",
-    lineHeight: 28,
-    marginTop: 8,
-    flex: 1,
+    lineHeight: 32,
+    marginTop: 6,
+    color: "#111827",
   },
 
   verseBlock: {
-  paddingVertical: 8,
-},
+    marginTop: 8,
+  },
 
-currentBlock: {
-  backgroundColor: "#fff8dc", // light highlight
-  borderRadius: 8,
-  padding: 8,
-  marginVertical: 10,
-},
+  currentBlock: {
+    backgroundColor: "#fff8dc", // light highlight
+    borderRadius: 8,
+    padding: 8,
+    marginVertical: 10,
+    width: "100%",
+  },
 
-prevNextBlock: {
-  backgroundColor: "#f0f0f0", // subtle gray for context
-  borderRadius: 8,
-  padding: 8,
-},
+  prevNextBlock: {
+    backgroundColor: "#f0f0f0", // subtle gray for context
+    borderRadius: 8,
+    padding: 8,
+  },
 
-prevNextLabel: {
-  color: "black",
-  fontWeight: "bold",
-  fontSize: 16,
-}
-  
+  prevNextLabel: {
+    color: "black",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
-
