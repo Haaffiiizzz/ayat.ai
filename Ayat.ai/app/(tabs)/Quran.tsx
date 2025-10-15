@@ -1,15 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
+import { useRouter } from "expo-router";
 import Surahs from "@/utils/Surahs.json";
 
 export default function Quran() {
+  const router = useRouter();
   return (
     <ScrollView style={styles.container}>
       {Surahs.map((surah, idx) => (
         <TouchableOpacity 
           key={idx} 
           style={styles.surahCard} 
-          onPress={() => console.log("Clicked surah", surah.SurahNameEnglish)}
+          onPress={() => router.push(`/Chapter?surahStr=${idx}`)}
         >
           <Text style={styles.surahNumber}>{surah.SurahInfo.split(".")[0]}</Text>
           <View style={styles.surahInfo}>

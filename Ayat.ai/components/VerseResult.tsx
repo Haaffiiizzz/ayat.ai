@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import Highlighted from "@/utils/highlighted";
 import Verses from "@/utils/Verses.json"; 
+import { useFonts } from "expo-font";
 type VerseDetails = {
   VerseID: string;
   SurahNumber: number;
@@ -22,6 +23,9 @@ type Props = {
 
 export default function VerseResult({ verse, keyword }: Props) {
   // Get previous and next verses by index
+  const [fontsLoaded] = useFonts({
+    Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
+  });
   const index = Number(verse.VerseIndex);
   const prevVerse = Verses[index - 2]; // im sedning  1 index?
   const nextVerse = Verses[index + 1];
@@ -49,7 +53,7 @@ export default function VerseResult({ verse, keyword }: Props) {
           <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
         </View>
 
-        {/* FIXED: Verse block should be stacked, not row */}
+        
         <View style={styles.divider} />
         <View style={styles.verseBlock}>
           <Text style={styles.responseLabel}>Verse</Text>
@@ -119,12 +123,13 @@ const styles = StyleSheet.create({
   },
 
   arabicText: {
-    fontSize: 22,
+    fontSize: 26,
     writingDirection: "rtl",
     textAlign: "right",
-    lineHeight: 32,
+    lineHeight: 38,
     marginTop: 6,
     color: "#111827",
+    fontFamily: "Uthmanic"
   },
 
   verseBlock: {

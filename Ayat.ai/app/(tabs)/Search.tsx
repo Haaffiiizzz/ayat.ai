@@ -2,6 +2,7 @@ import { Text, TextInput, ScrollView, StyleSheet, Button, View} from "react-nati
 import { keywordSearch, embeddingSearch } from "@/utils/helper";
 import React , { useState, useEffect } from "react";
 import VerseResult from "@/components/VerseResult";
+import { useFonts } from "expo-font";
 
 type verseDetails = {
   "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
@@ -13,6 +14,11 @@ export default function Search () {
     const [numResults, setNumResults] = useState<number | null>(0)
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    const [fontsLoaded] = useFonts({
+      Uthmanic: require("../../assets/fonts/UthmanTN_v2-0.ttf"),
+    });
+    
     
 
     const getSearchFromKeyword = async (keyword: string) => {
@@ -134,12 +140,13 @@ const styles = StyleSheet.create({
   },
 
   arabicText: {
-    fontSize: 20,
+    fontSize: 24,
     writingDirection: 'rtl',
     textAlign: 'right',
-    lineHeight: 28,
+    lineHeight: 30,
     marginTop: 8,
     flex: 1,
+    fontFamily: "Uthmanic"
   },
 
   resultsInfo: {
