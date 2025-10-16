@@ -1,4 +1,4 @@
-import { Text, TextInput, ScrollView, StyleSheet, Button, View} from "react-native";
+import { Text, TextInput, ScrollView, StyleSheet, Button, View, ActivityIndicator } from "react-native";
 import { keywordSearch, embeddingSearch } from "@/utils/helper";
 import React , { useState, useEffect } from "react";
 import VerseResult from "@/components/VerseResult";
@@ -46,15 +46,25 @@ export default function Search () {
                 style={styles.textInput}
                 onChangeText={onChangeKeyword}
                 value={keyword}
-                placeholder="Enter Search Keyword!"
+                placeholder="Enter search keyword"
+                placeholderTextColor="#9CA3AF"
+                returnKeyType="search"
+                onSubmitEditing={() => getSearchFromKeyword(keyword)}
             />
-            <Button
-              title="Submit" 
-              onPress={ async () => { getSearchFromKeyword(keyword)
-              }} 
-            />
+            <View style={{ width: '90%', marginBottom: 12 }}>
+              <Button
+                title={isLoading ? "Searching..." : "Search"}
+                onPress={async () => { getSearchFromKeyword(keyword) }}
+                disabled={isLoading || !keyword.trim()}
+              />
+            </View>
 
-            {isLoading && <Text>Loading...</Text>}
+            {isLoading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#007AFF" />
+                <Text style={styles.loadingText}>Finding relevant verses...</Text>
+              </View>
+            )}
 
             {
               searchResult === null && <Text>No results found!</Text>
@@ -62,8 +72,10 @@ export default function Search () {
 
             {searchResult && searchResult.length > 0 && (
                 <View style={styles.resultsInfo}>
-                    <Text style={styles.resultsLabel}>Number of results</Text>
-                    <Text style={styles.resultsValue}>{searchResult.length}</Text>
+                    <Text style={styles.resultsLabel}>Results</Text>
+                    <Text style={styles.resultsValue}>
+                      {Math.min(Number(numResults) || 0, searchResult.length)} / {searchResult.length}
+                    </Text>
                 </View>
             )}
 
@@ -89,17 +101,24 @@ export default function Search () {
 
 const styles = StyleSheet.create({
     container: {
-        
-
+      flex: 1,
+      backgroundColor: '#fff',
     },
     textInput: {
-        backgroundColor: '#555',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        width: 300,
-        color: 'white',
-        marginBottom: 20,
+        backgroundColor: '#ffffff',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        borderRadius: 8,
+        width: '90%',
+        color: '#111827',
+        marginTop: 12,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
     },
 
     responseCard: {
@@ -173,6 +192,19 @@ resultsValue: {
   fontWeight: "700",
   color: "#111827",            // dark text
 },
+
+  loadingContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#007AFF',
+    fontWeight: '600',
+    fontStyle: 'italic',
+  },
 
 
 });

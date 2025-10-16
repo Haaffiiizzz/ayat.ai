@@ -5,6 +5,7 @@ import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
 import VerseResult from '@/components/VerseResult';
+import RecordingIndicator from '@/components/RecordingIndicator';
 
 type RecordingItem = {
   sound: Audio.Sound;
@@ -88,8 +89,13 @@ export default function App() {
       : `${minutes}:${seconds}`;
   }
 
+  const isInitial = !recording && !loading && !apiResponse;
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={isInitial ? styles.centeredContent : styles.content}
+    >
       <TouchableOpacity
         onPress={recording ? stopRecording : startRecording}
         style={[
@@ -100,6 +106,7 @@ export default function App() {
         <Text style={styles.micIcon}><FontAwesome name="microphone" size={40} color="white" />
 </Text>
       </TouchableOpacity>
+      {recording && <RecordingIndicator recording={recording} />}
 
 
       {/* {recordedAudio && (
@@ -147,6 +154,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     
+  },
+  centeredContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  content: {
+    alignItems: 'center',
+    paddingVertical: 16,
   },
 
   row: {
