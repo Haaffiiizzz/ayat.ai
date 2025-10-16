@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import Highlighted from "@/utils/highlighted";
 import Verses from "@/utils/Verses.json"; 
 import { useFonts } from "expo-font";
+import { useRouter } from "expo-router";
 type VerseDetails = {
   VerseID: string;
   SurahNumber: number;
@@ -26,6 +27,7 @@ export default function VerseResult({ verse, keyword }: Props) {
   const [fontsLoaded] = useFonts({
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
+  const router = useRouter();
   const index = Number(verse.VerseIndex);
   const prevVerse = Verses[index - 2]; // im sedning  1 index?
   const nextVerse = Verses[index + 1];
@@ -44,7 +46,7 @@ export default function VerseResult({ verse, keyword }: Props) {
       <View style={styles.currentBlock}>
         <View style={styles.responseRow}>
           <Text style={styles.responseLabel}>Surah</Text>
-          <Text style={styles.responseValue}>{verse.SurahNumber}</Text>
+          <Text style={styles.responseValue}>{verse.SurahNumber}. {verse.SurahNameTransliteration} - {verse.SurahNameEnglish}</Text>
         </View>
 
         <View style={styles.divider} />
@@ -69,6 +71,12 @@ export default function VerseResult({ verse, keyword }: Props) {
             <Text style={styles.responseValue}>{verse.VerseEnglish}.</Text>
           )}
         </View>
+        <Button
+          title="Go to Surah"
+          onPress={() => {
+            router.push(`/Chapter?surahStr=${verse.SurahNumber}`)
+            }}
+        />
       </View>
 
       {nextVerse && (
@@ -95,8 +103,8 @@ const styles = StyleSheet.create({
 
   responseRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
     paddingVertical: 6,
     width: "100%",
   },
@@ -113,7 +121,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#111827",
-    width: "90%",
+    flex: 1,
+    flexShrink: 1,
+    flexWrap: "wrap",
+    marginLeft: 8,
+    width: undefined,
+    maxWidth: "100%",
   },
 
   divider: {
