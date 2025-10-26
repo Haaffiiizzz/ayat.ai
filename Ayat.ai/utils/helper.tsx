@@ -8,7 +8,7 @@ export async function sendAudioToAPI(file: string) {
       type: 'audio/m4a',
     } as any);
 
-    const response = await fetch('http://10.0.0.74:8000/uploadAudio/', {
+    const response = await fetch('http://3.16.180.182:8000/uploadAudio/', {
       method: 'POST',
       body: formData,
     });
@@ -32,7 +32,7 @@ export async function keywordSearch(keyword: string) {
   
   // 34.201.105.88:8000
   try {
-    const response = await fetch(`http://10.0.0.74:8000/searchkeyword?keyword=${keyword}`, {
+    const response = await fetch(`http://3.16.180.182:8000/searchkeyword?keyword=${keyword}`, {
         method: 'GET',
     });
 
@@ -53,7 +53,7 @@ export async function keywordSearch(keyword: string) {
 }
 
 export async function embeddingSearch(query: string) {
-  const endpoint = `http://10.0.0.74:8000/searchembedding?query=${query}`;
+  const endpoint = `http://3.16.180.182:8000/searchembedding?query=${query}`;
 
   try {
     const response = await fetch(endpoint, {

@@ -7,7 +7,7 @@ import { useFonts } from "expo-font";
 
 export default function Chapter() {
   const { surahStr } = useLocalSearchParams();
-  const surahID = Number(surahStr);
+  const surahID = Number(surahStr)-1;
   const surahData = Surahs[surahID];    
   if (!surahData)
     return <Text style={styles.fallback}>Chapter not found.</Text>;

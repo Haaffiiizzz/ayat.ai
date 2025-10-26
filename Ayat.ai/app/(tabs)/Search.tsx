@@ -80,8 +80,12 @@ export default function Search () {
             )}
 
             {displayedResults && displayedResults.length > 0 &&
-              displayedResults.map((verse: verseDetails, index) => (
-                <VerseResult key={index} verse={verse} keyword={keyword} />
+              displayedResults.map((verse: any) => (
+                <VerseResult
+                  key={verse?.VerseID || `${verse?.SurahNumber}:${verse?.VerseNumber}`}
+                  verse={verse}
+                  keyword={keyword}
+                />
               ))
             }
 

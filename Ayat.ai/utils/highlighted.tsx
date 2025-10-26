@@ -26,10 +26,8 @@ function Highlighted({ text, query }: { text: string; query: string }) {
   return (
     <Text style={styles.responseValue}>
       {parts.map((part, i) =>
-        regex.test(part) ? (
-          <Text key={i} style={styles.highlight}>
-            {part}
-          </Text>
+        i % 2 === 1 ? (
+          <Text key={i} style={styles.highlight}>{part}</Text>
         ) : (
           <Text key={i}>{part}</Text>
         )

@@ -28,9 +28,10 @@ export default function VerseResult({ verse, keyword }: Props) {
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
   const router = useRouter();
-  const index = Number(verse.VerseIndex);
-  const prevVerse = Verses[index - 2]; // im sedning  1 index?
-  const nextVerse = Verses[index + 1];
+  // Derive current index from VerseID to avoid off-by-one/shape issues
+  const currIdx = Verses.findIndex((v) => v.VerseID === verse.VerseID);
+  const prevVerse = currIdx > 0 ? (Verses as any)[currIdx - 1] : undefined;
+  const nextVerse = currIdx >= 0 && currIdx < (Verses as any).length - 1 ? (Verses as any)[currIdx + 1] : undefined;
 
   return (
     <View style={styles.responseCard}>
