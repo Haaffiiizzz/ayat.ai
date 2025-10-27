@@ -5,6 +5,7 @@ import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
 import VerseResult from '@/components/VerseResult';
+import { addSearchedVerse } from '@/utils/history';
 import RecordingIndicator from '@/components/RecordingIndicator';
 
 type RecordingItem = {
@@ -77,6 +78,15 @@ export default function App() {
       setLoading(true);
       const response = await sendAudioToAPI(file);
       setApiResponse(response);
+      // Save to recent history only from index page when a valid verse is found
+      if (response && response.VerseID) {
+        try {
+          await addSearchedVerse(response as any);
+        } catch (e) {
+          // non-fatal
+          console.warn('Failed to add to history', e);
+        }
+      }
       setLoading(false);
     }
   }
