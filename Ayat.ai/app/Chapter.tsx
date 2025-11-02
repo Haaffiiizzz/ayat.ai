@@ -3,6 +3,10 @@ import { View, Text, ScrollView, StyleSheet } from "react-native";
 import Surahs from "@/utils/FullDataset.json";
 import { useFonts } from "expo-font";
 
+// export const unstable_settings = {
+//   tabBarStyle: { display: 'none' },
+//   drawerItemStyle: { display: 'none' },
+// };
 
 
 export default function Chapter() {

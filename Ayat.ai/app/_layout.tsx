@@ -1,10 +1,10 @@
-import { Drawer } from 'expo-router/drawer';
+import { Stack } from 'expo-router';
 
 export default function Layout() {
   return (
-    <Drawer>
-      <Drawer.Screen name="(tabs)" options={{ title: 'Home' }} />
-      <Drawer.Screen name="History" options={{ title: 'History' }} />
-    </Drawer>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="History" />
+    </Stack>
   );
 }

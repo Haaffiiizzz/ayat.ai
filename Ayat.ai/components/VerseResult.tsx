@@ -28,8 +28,17 @@ export default function VerseResult({ verse, keyword }: Props) {
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
   const router = useRouter();
-  // Derive current index from VerseID to avoid off-by-one/shape issues
-  const currIdx = Verses.findIndex((v) => v.VerseID === verse.VerseID);
+  // Derive current index; fall back to Surah/Ayah if VerseID shapes differ
+  const currIdx = React.useMemo(() => {
+    const list: any[] = Verses as any;
+    let idx = list.findIndex((v) => v.VerseID === verse.VerseID);
+    if (idx === -1 && verse?.SurahNumber && verse?.VerseNumber) {
+      idx = list.findIndex(
+        (v) => v.SurahNumber === verse.SurahNumber && v.VerseNumber === verse.VerseNumber
+      );
+    }
+    return idx;
+  }, [verse?.VerseID, verse?.SurahNumber, verse?.VerseNumber]);
   const prevVerse = currIdx > 0 ? (Verses as any)[currIdx - 1] : undefined;
   const nextVerse = currIdx >= 0 && currIdx < (Verses as any).length - 1 ? (Verses as any)[currIdx + 1] : undefined;
 

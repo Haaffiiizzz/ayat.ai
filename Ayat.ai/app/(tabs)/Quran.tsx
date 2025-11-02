@@ -11,7 +11,7 @@ export default function Quran() {
         <TouchableOpacity 
           key={idx} 
           style={styles.surahCard} 
-          onPress={() => router.push(`/Chapter?surahStr=${idx}`)}
+          onPress={() => router.push(`/Chapter?surahStr=${idx + 1}`)}
         >
           <Text style={styles.surahNumber}>{surah.SurahInfo.split(".")[0]}</Text>
           <View style={styles.surahInfo}>
