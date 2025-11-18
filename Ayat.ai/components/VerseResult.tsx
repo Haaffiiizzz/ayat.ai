@@ -54,7 +54,7 @@ export default function VerseResult({ verse, keyword }: Props) {
         <View style={[styles.verseBlock, styles.prevNextBlock]}>
           <Text style={styles.prevNextLabel}>Previous</Text>
           <Text style={styles.arabicText}>{prevVerse.VerseWithHarakat}</Text>
-          <Text style={styles.responseValue}>{prevVerse.VerseEnglish}.</Text>
+          <Text style={styles.englishText}>{prevVerse.VerseEnglish}.</Text>
         </View>
       )}
 
@@ -88,7 +88,7 @@ export default function VerseResult({ verse, keyword }: Props) {
           {keyword ? (
             <Highlighted text={displayVerse.VerseEnglish} query={keyword} />
           ) : (
-            <Text style={styles.responseValue}>{displayVerse.VerseEnglish}.</Text>
+            <Text style={styles.englishText}>{displayVerse.VerseEnglish}.</Text>
           )}
         </View>
 
@@ -104,7 +104,7 @@ export default function VerseResult({ verse, keyword }: Props) {
         <View style={[styles.verseBlock, styles.prevNextBlock]}>
           <Text style={styles.prevNextLabel}>Next</Text>
           <Text style={styles.arabicText}>{nextVerse.VerseWithHarakat}</Text>
-          <Text style={styles.responseValue}>{nextVerse.VerseEnglish}.</Text>
+          <Text style={styles.englishText}>{nextVerse.VerseEnglish}.</Text>
         </View>
       )}
     </View>
@@ -189,4 +189,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
+
+  englishText: {
+  fontSize: 16,
+  fontWeight: "500",
+  color: "#111827",
+  marginTop: 6,
+  lineHeight: 22,
+},
 });
