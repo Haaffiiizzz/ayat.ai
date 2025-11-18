@@ -42,7 +42,7 @@ export default function History() {
       )}
 
       {!loading && items.map((item) => (
-        <TouchableOpacity key={item.VerseID} onPress={() => {
+        <TouchableOpacity style={styles.historyItem} key={item.VerseID} onPress={() => {
           router.push({
             pathname: "../HistoryItem",
             params: {data: JSON.stringify(item)}
@@ -91,11 +91,25 @@ const styles = StyleSheet.create({
   },
 
   row: {
+    width: '100%',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5E5",
     backgroundColor: "white",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  historyItem: {
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+
+  textContainer: {
+    flex: 1,
+    paddingRight: 12,
   },
 
   title: {
@@ -114,6 +128,7 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 12,
     color: "#888",
+    marginLeft: 12,
   },
 
 
