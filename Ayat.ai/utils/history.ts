@@ -80,9 +80,10 @@ export function formatTime(timestamp) {
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
 
-  if (seconds < 60) return "just now";
-  if (minutes < 60) return minutes + " min ago";
-  if (hours < 24) return hours + " hr ago";
+  if (seconds < 120) return "just now";
+  if (minutes < 60) return minutes + " mins ago";
+  if (hours == 1) return hours + " hr ago";
+  if (hours < 24) return hours + " hrs ago";
   if (days === 1) return "yesterday";
   if (days < 7) return days + " days ago";
 
