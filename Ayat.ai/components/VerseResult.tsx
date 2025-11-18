@@ -4,6 +4,7 @@ import Highlighted from "@/utils/highlighted";
 import Verses from "@/utils/Verses.json"; 
 import { useFonts } from "expo-font";
 import { useRouter } from "expo-router";
+
 type VerseDetails = {
   VerseID: string;
   SurahNumber: number;
@@ -23,24 +24,29 @@ type Props = {
 };
 
 export default function VerseResult({ verse, keyword }: Props) {
-  // Get previous and next verses by index
+
   const [fontsLoaded] = useFonts({
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
   const router = useRouter();
-  // Derive current index; fall back to Surah/Ayah if VerseID shapes differ
-  const currIdx = React.useMemo(() => {
-    const list: any[] = Verses as any;
-    let idx = list.findIndex((v) => v.VerseID === verse.VerseID);
-    if (idx === -1 && verse?.SurahNumber && verse?.VerseNumber) {
-      idx = list.findIndex(
-        (v) => v.SurahNumber === verse.SurahNumber && v.VerseNumber === verse.VerseNumber
-      );
+  const verseList = React.useMemo(() => Verses as VerseDetails[], []);
+
+
+  let currIdx = typeof verse?.VerseIndex === "number" ? verse.VerseIndex : -1;
+  currIdx = currIdx - 1;
+
+  const prevVerse = currIdx > 0 ? verseList[currIdx - 1] : undefined;
+  const nextVerse =
+    currIdx >= 0 && currIdx < verseList.length - 1 ? verseList[currIdx + 1] : undefined;
+
+
+  const displayVerse = React.useMemo<VerseDetails>(() => {
+    if (currIdx >= 0) {
+      return { ...verse, ...verseList[currIdx] };
     }
-    return idx;
-  }, [verse?.VerseID, verse?.SurahNumber, verse?.VerseNumber]);
-  const prevVerse = currIdx > 0 ? (Verses as any)[currIdx - 1] : undefined;
-  const nextVerse = currIdx >= 0 && currIdx < (Verses as any).length - 1 ? (Verses as any)[currIdx + 1] : undefined;
+    return verse;
+  }, [currIdx, verse, verseList]);
+
 
   return (
     <View style={styles.responseCard}>
@@ -56,35 +62,40 @@ export default function VerseResult({ verse, keyword }: Props) {
       <View style={styles.currentBlock}>
         <View style={styles.responseRow}>
           <Text style={styles.responseLabel}>Surah</Text>
-          <Text style={styles.responseValue}>{verse.SurahNumber}. {verse.SurahNameTransliteration} - {verse.SurahNameEnglish}</Text>
+          <Text style={styles.responseValue}>
+            {displayVerse.SurahNumber}. {displayVerse.SurahNameTransliteration} - {displayVerse.SurahNameEnglish}
+          </Text>
         </View>
 
         <View style={styles.divider} />
+
         <View style={styles.responseRow}>
           <Text style={styles.responseLabel}>Ayah</Text>
-          <Text style={styles.responseValue}>{verse.VerseNumber}</Text>
+          <Text style={styles.responseValue}>{displayVerse.VerseNumber}</Text>
         </View>
 
-        
         <View style={styles.divider} />
+
         <View style={styles.verseBlock}>
           <Text style={styles.responseLabel}>Verse</Text>
-          <Text style={styles.arabicText}>{verse.VerseWithHarakat}</Text>
+          <Text style={styles.arabicText}>{displayVerse.VerseWithHarakat}</Text>
         </View>
 
         <View style={styles.divider} />
+
         <View style={styles.verseBlock}>
           <Text style={styles.responseLabel}>Translation</Text>
           {keyword ? (
-            <Highlighted text={verse.VerseEnglish} query={keyword} />
+            <Highlighted text={displayVerse.VerseEnglish} query={keyword} />
           ) : (
-            <Text style={styles.responseValue}>{verse.VerseEnglish}.</Text>
+            <Text style={styles.responseValue}>{displayVerse.VerseEnglish}.</Text>
           )}
         </View>
+
         <Button
           title="Go to Surah"
           onPress={() => {
-            router.push(`/Chapter?surahStr=${verse.SurahNumber}`)
+            router.push(`/Chapter?surahStr=${displayVerse.SurahNumber}`)
             }}
         />
       </View>
@@ -160,7 +171,7 @@ const styles = StyleSheet.create({
   },
 
   currentBlock: {
-    backgroundColor: "#fff8dc", // light highlight
+    backgroundColor: "#fff8dc",
     borderRadius: 8,
     padding: 8,
     marginVertical: 10,
@@ -168,7 +179,7 @@ const styles = StyleSheet.create({
   },
 
   prevNextBlock: {
-    backgroundColor: "#f0f0f0", // subtle gray for context
+    backgroundColor: "#f0f0f0",
     borderRadius: 8,
     padding: 8,
   },

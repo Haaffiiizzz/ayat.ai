@@ -14,22 +14,26 @@ export default function Search () {
     const [numResults, setNumResults] = useState<number | null>(0)
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [activeQuery, setActiveQuery] = useState<string>('')
 
     const [fontsLoaded] = useFonts({
       Uthmanic: require("../../assets/fonts/UthmanTN_v2-0.ttf"),
     });
-    
-    
 
     const getSearchFromKeyword = async (keyword: string) => {
+        const trimmedKeyword = keyword.trim()
+        if (!trimmedKeyword) {
+          return
+        }
         setIsLoading(true)
-        const result = await embeddingSearch(keyword); //from @utils/helper
+        const result = await embeddingSearch(trimmedKeyword);
         setIsLoading(false)
         setSearchResult(result)
         const resultLength = result ? result.length : 0;
         
         const newNumResults = resultLength >= 10 ? 10 : resultLength
         setNumResults(newNumResults)
+        setActiveQuery(trimmedKeyword)
     }
 
     useEffect( 
@@ -38,7 +42,6 @@ export default function Search () {
         setDisplayedResults(newDisplayedResults)
       }, [searchResult, numResults]
     )
-
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: "center"}}>
@@ -66,9 +69,10 @@ export default function Search () {
               </View>
             )}
 
-            {
-              searchResult === null && <Text>No results found!</Text>
-            }
+            
+            {!isLoading && searchResult?.length === 0 && (
+              <Text>No results found!</Text>
+            )}
 
             {searchResult && searchResult.length > 0 && (
                 <View style={styles.resultsInfo}>
@@ -84,7 +88,7 @@ export default function Search () {
                 <VerseResult
                   key={verse?.VerseID || `${verse?.SurahNumber}:${verse?.VerseNumber}`}
                   verse={verse}
-                  keyword={keyword}
+                  keyword={activeQuery}
                 />
               ))
             }
@@ -92,14 +96,9 @@ export default function Search () {
             { numResults < searchResult?.length &&
               <Button
                   title="Show More Results" 
-                  onPress={ async () => { setNumResults(numResults + 10)
-                  }} 
+                  onPress={ async () => { setNumResults(numResults + 10) }} 
             /> }
-              
-
-            
         </ScrollView>
-        
     )
 }
 
@@ -126,89 +125,87 @@ const styles = StyleSheet.create({
     },
 
     responseCard: {
-    width: '90%',
-    marginTop: 20,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#eaeaea',
-    backgroundColor: '#f9f9f9',
-  },
+      width: '90%',
+      marginTop: 20,
+      padding: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: '#eaeaea',
+      backgroundColor: '#f9f9f9',
+    },
 
-  responseRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 6,
-  },
+    responseRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: 6,
+    },
 
-  responseLabel: {
-    width: 90,              // fixed label column
-    fontSize: 14,
-    color: '#6b7280',
-    paddingTop: 2,
-  },
+    responseLabel: {
+      width: 90,
+      fontSize: 14,
+      color: '#6b7280',
+      paddingTop: 2,
+    },
 
-  responseValue: {
-    flex: 1,                // value takes remaining space
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#111827',
-},
+    responseValue: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#111827',
+    },
 
-  divider: {
-    height: 1,
-    backgroundColor: '#f0f0f0',
-    marginVertical: 6,
-  },
+    divider: {
+      height: 1,
+      backgroundColor: '#f0f0f0',
+      marginVertical: 6,
+    },
 
-  arabicText: {
-    fontSize: 24,
-    writingDirection: 'rtl',
-    textAlign: 'right',
-    lineHeight: 30,
-    marginTop: 8,
-    flex: 1,
-    fontFamily: "Uthmanic"
-  },
+    arabicText: {
+      fontSize: 24,
+      writingDirection: 'rtl',
+      textAlign: 'right',
+      lineHeight: 30,
+      marginTop: 8,
+      flex: 1,
+      fontFamily: "Uthmanic"
+    },
 
-  resultsInfo: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  alignItems: "center",
-  borderColor: '#eaeaea',
-backgroundColor: '#f9f9f9',  // light gray
-  paddingVertical: 10,
-  paddingHorizontal: 16,
-  borderRadius: 8,
-  marginTop: 16,
-  width: "90%",
-},
+    resultsInfo: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderColor: '#eaeaea',
+      backgroundColor: '#f9f9f9',
+      paddingVertical: 10,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      marginTop: 16,
+      width: "90%",
+    },
 
-resultsLabel: {
-  fontSize: 14,
-  color: "#6b7280",            // muted gray
-  fontWeight: "500",
-},
+    resultsLabel: {
+      fontSize: 14,
+      color: "#6b7280",
+      fontWeight: "500",
+    },
 
-resultsValue: {
-  fontSize: 16,
-  fontWeight: "700",
-  color: "#111827",            // dark text
-},
+    resultsValue: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: "#111827",
+    },
 
-  loadingContainer: {
-    marginTop: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#007AFF',
-    fontWeight: '600',
-    fontStyle: 'italic',
-  },
-
-
+    loadingContainer: {
+      marginTop: 16,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    loadingText: {
+      marginTop: 10,
+      fontSize: 16,
+      color: '#007AFF',
+      fontWeight: '600',
+      fontStyle: 'italic',
+    },
 });
