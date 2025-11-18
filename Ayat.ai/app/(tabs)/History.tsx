@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import VerseResult from '@/components/VerseResult';
-import { getHistory, clearHistory, HistoryItem } from '@/utils/history';
+import { getHistory, clearHistory, HistoryItem, formatTime } from '@/utils/history';
+import { useRouter } from 'expo-router';
 
 export default function History() {
   const [items, setItems] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter()
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -39,7 +42,30 @@ export default function History() {
       )}
 
       {!loading && items.map((item) => (
-        <VerseResult key={item.VerseID} verse={item} />
+        <TouchableOpacity key={item.VerseID} onPress={() => {
+          router.push({
+            pathname: "../HistoryItem",
+            params: {data: JSON.stringify(item)}
+          })
+        }}>
+          <View style={styles.row}>
+            <View style={styles.textContainer}>
+
+              <Text style={styles.title}>
+                {item.SurahNameTransliteration}: {item.VerseNumber}
+              </Text>
+              <Text style={styles.subtitle} numberOfLines={1}>
+                {item.VerseEnglish}
+              </Text>
+
+            </View>
+
+            <Text style={styles.time}>
+              {formatTime(item.searchedAt)}
+            </Text>
+
+          </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
@@ -57,13 +83,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
+
   muted: {
     marginTop: 12,
     fontSize: 16,
     color: '#6b7280',
   },
+
+  row: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5E5",
+    backgroundColor: "white",
+  },
+
+  title: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#1A1A1A",
+    marginBottom: 4,
+  },
+
+  subtitle: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 6,
+  },
+
+  time: {
+    fontSize: 12,
+    color: "#888",
+  },
+
+
 });

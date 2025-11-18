@@ -70,3 +70,28 @@ export async function addSearchedVerse(verse: VerseDetails): Promise<void> {
   if (next.length > MAX_ITEMS) next.length = MAX_ITEMS;
   await writeStore(next);
 }
+
+export function formatTime(timestamp) {
+  const now = Date.now();
+  const diff = now - timestamp;
+
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (seconds < 60) return "just now";
+  if (minutes < 60) return minutes + " min ago";
+  if (hours < 24) return hours + " hr ago";
+  if (days === 1) return "yesterday";
+  if (days < 7) return days + " days ago";
+
+  const date = new Date(timestamp);
+  return (
+    date.getFullYear() +
+    "-" +
+    (date.getMonth() + 1) +
+    "-" +
+    date.getDate()
+  );
+}
