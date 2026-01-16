@@ -81,7 +81,7 @@ export default function App() {
       // Save to recent history only from index page when a valid verse is found
       if (response && response.VerseID) {
         try {
-          await addSearchedVerse(response as any);
+          await addSearchedVerse(response as any, "Index");
         } catch (e) {
           // non-fatal
           console.warn('Failed to add to history', e);

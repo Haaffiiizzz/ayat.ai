@@ -14,7 +14,7 @@ export type VerseDetails = {
   VerseIndex: number;
 };
 
-export type HistoryItem = VerseDetails & { searchedAt: number };
+export type HistoryItem = VerseDetails & { searchedAt: number, searchType: String, searchTerm: String};
 
 const STORAGE_KEY = "@ayat/recent_verses";
 const MAX_ITEMS = 50;
@@ -56,17 +56,29 @@ export async function removeFromHistory(verse: VerseDetails): Promise<void> {
   await writeStore(next);
 }
 
-export async function addSearchedVerse(verse: VerseDetails): Promise<void> {
-  if (!verse || !verse.VerseID) return;
+export async function addSearchedVerse(verseData: VerseDetails, searchType: String, searchTerm: String = ""): Promise<void> {
+  
   const now = Date.now();
-  const id = getId(verse);
+  let id = "dkeguh" // jsut so it never matches
+  if (!searchTerm){
+     id = getId(verseData);
+  }
 
   const list = await readStore();
   const without = list.filter((item) => getId(item) !== id);
-  const next: HistoryItem[] = [
-    { ...verse, searchedAt: now },
+
+  let next: HistoryItem[];
+  if (!searchTerm){
+    next = [
+    { ...verseData, searchedAt: now, searchType: searchType, searchTerm: searchTerm },
     ...without,
   ];
+  }else{
+    next = [
+      {verse}
+    ]
+  }
+  
   if (next.length > MAX_ITEMS) next.length = MAX_ITEMS;
   await writeStore(next);
 }

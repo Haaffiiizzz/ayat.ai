@@ -3,6 +3,7 @@ import { keywordSearch, embeddingSearch } from "@/utils/helper";
 import React , { useState, useEffect } from "react";
 import VerseResult from "@/components/VerseResult";
 import { useFonts } from "expo-font";
+import { addSearchedVerse } from "@/utils/history";
 
 type verseDetails = {
   "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
@@ -27,6 +28,16 @@ export default function Search () {
         }
         setIsLoading(true)
         const result = await embeddingSearch(trimmedKeyword);
+        console.log(result )
+        if (result && result.VerseID) {
+          console.log("entered here")
+                try {
+                  await addSearchedVerse(result as any, "Search", trimmedKeyword);
+                } catch (e) {
+                  // non-fatal
+                  console.warn('Failed to add to history', e);
+                }
+              }
         setIsLoading(false)
         setSearchResult(result)
         const resultLength = result ? result.length : 0;
