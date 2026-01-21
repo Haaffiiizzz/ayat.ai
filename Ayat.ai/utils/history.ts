@@ -12,75 +12,118 @@ export type VerseDetails = {
   VerseWithoutHarakat: string;
   VerseEnglish: string;
   VerseIndex: number;
-};
+} | null;
 
-export type HistoryItem = VerseDetails & { searchedAt: number, searchType: String, searchTerm: String};
+export type AudioHistoryItem = VerseDetails & { searchedAt: number};
+export type KeywordHistoryItem = {searchedAt: number, searchTerm: String}
 
-const STORAGE_KEY = "@ayat/recent_verses";
+const AUDIO_STORAGE_KEY = "@ayat/recent_audio_searches";
+const KEYWORD_STORAGE_KEY = "@ayat/recent_keyword_searches";
 const MAX_ITEMS = 50;
 
 function getId(v: VerseDetails) {
   return `S:${v.SurahNumber}-A:${v.VerseNumber}`;
 }
 
-async function readStore(): Promise<HistoryItem[]> {
+async function readStore(fromWhere: String = ""): Promise<AudioHistoryItem[] | KeywordHistoryItem[]> {
+
+
   try {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY);
+    let raw;
+    if (fromWhere == "keyword"){
+      raw = await AsyncStorage.getItem(KEYWORD_STORAGE_KEY)
+    }else{
+      raw = await AsyncStorage.getItem(AUDIO_STORAGE_KEY);
+    }
+    
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) return parsed as HistoryItem[];
+
+    if (fromWhere == "keyword"){return parsed as KeywordHistoryItem[];
+    }
+    else{return parsed as AudioHistoryItem[];
+    }
+    
     return [];
   } catch {
     return [];
   }
 }
 
-async function writeStore(items: HistoryItem[]): Promise<void> {
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+async function writeStore(items: AudioHistoryItem[] | KeywordHistoryItem[], fromWhere: String = ""): Promise<void> {
+  if (fromWhere == "keyword"){
+    await AsyncStorage.setItem(KEYWORD_STORAGE_KEY, JSON.stringify(items));
+  }
+  await AsyncStorage.setItem(AUDIO_STORAGE_KEY, JSON.stringify(items));
 }
 
-export async function getHistory(): Promise<HistoryItem[]> {
-  const list = await readStore();
+export async function getHistory(fromWhere: String = ""): Promise<AudioHistoryItem[] | KeywordHistoryItem[]> {
+  const list = await readStore(fromWhere);
   // newest first
   return list.sort((a, b) => b.searchedAt - a.searchedAt);
 }
 
-export async function clearHistory(): Promise<void> {
-  await AsyncStorage.removeItem(STORAGE_KEY);
+export async function clearHistory(fromWhere: String = ""): Promise<void> {
+  if (fromWhere == "keyword"){
+    await AsyncStorage.removeItem(KEYWORD_STORAGE_KEY);
+  }else{
+    await AsyncStorage.removeItem(AUDIO_STORAGE_KEY);
+  }
 }
 
-export async function removeFromHistory(verse: VerseDetails): Promise<void> {
-  const id = getId(verse);
-  const list = await readStore();
-  const next = list.filter((item) => getId(item) !== id);
-  await writeStore(next);
+export async function removeFromHistory(verse: VerseDetails, fromWhere: String = "", searchTerm: String = ""): Promise<void> {
+  const list = await readStore(fromWhere)
+  let next;
+
+  if (fromWhere == "keyword"){
+    next = list.filter((item) => item.searchTerm !== searchTerm)
+  }else{
+    const id = getId(verse);
+    next = list.filter((item) => getId(item) !== id);
+  }
+
+  await writeStore(next, fromWhere);
 }
 
-export async function addSearchedVerse(verseData: VerseDetails, searchType: String, searchTerm: String = ""): Promise<void> {
+export async function addSearchedVerse(verseData: VerseDetails = null, fromWhere: String = "", searchTerm: String = ""): Promise<void> {
   
   const now = Date.now();
   let id = "dkeguh" // jsut so it never matches
-  if (!searchTerm){
+  if (!fromWhere){
      id = getId(verseData);
   }
 
-  const list = await readStore();
-  const without = list.filter((item) => getId(item) !== id);
+  const list = await readStore(fromWhere);
+  let without;
 
-  let next: HistoryItem[];
-  if (!searchTerm){
+  if (fromWhere == "keyword"){
+    without = list.filter((item) => item.searchTerm !== searchTerm)
+  } else{
+    without = list.filter((item) => getId(item) !== id);
+  }
+
+  
+  if (!fromWhere){
+    let next: AudioHistoryItem[];
     next = [
-    { ...verseData, searchedAt: now, searchType: searchType, searchTerm: searchTerm },
-    ...without,
-  ];
+      { ...verseData, searchedAt: now },
+      ...without,
+    ];
   }else{
+    let next: KeywordHistoryItem[];
     next = [
-      {verse}
+      {searchedAt: now, searchTerm: searchTerm},
+      ...without,
     ]
   }
   
   if (next.length > MAX_ITEMS) next.length = MAX_ITEMS;
   await writeStore(next);
+}
+
+export async function addSearchedKeyword(searchTerm: String = "", topResult: VerseDetails): Promise<void>{
+  const now = Date.now();
+  const list = await readStore();
 }
 
 export function formatTime(timestamp) {
