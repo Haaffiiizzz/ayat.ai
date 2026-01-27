@@ -4,6 +4,7 @@ import React , { useState, useEffect } from "react";
 import VerseResult from "@/components/VerseResult";
 import { useFonts } from "expo-font";
 import { addSearchedVerse } from "@/utils/history";
+import { useLocalSearchParams } from "expo-router";
 
 type verseDetails = {
   "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
@@ -16,6 +17,7 @@ export default function Search () {
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [activeQuery, setActiveQuery] = useState<string>('')
+    const params = useLocalSearchParams();
 
     const [fontsLoaded] = useFonts({
       Uthmanic: require("../../assets/fonts/UthmanTN_v2-0.ttf"),
@@ -28,16 +30,14 @@ export default function Search () {
         }
         setIsLoading(true)
         const result = await embeddingSearch(trimmedKeyword);
-        console.log(result )
-        if (result && result.VerseID) {
-          console.log("entered here")
-                try {
-                  await addSearchedVerse(result as any, "Search", trimmedKeyword);
-                } catch (e) {
-                  // non-fatal
-                  console.warn('Failed to add to history', e);
-                }
-              }
+        const topResult = Array.isArray(result) ? result[0] : result;
+
+        try {
+          await addSearchedVerse(topResult ?? null, "keyword", trimmedKeyword);
+        } catch (e) {
+          // non-fatal
+          console.warn('Failed to add to history', e);
+        }
         setIsLoading(false)
         setSearchResult(result)
         const resultLength = result ? result.length : 0;
@@ -53,6 +53,15 @@ export default function Search () {
         setDisplayedResults(newDisplayedResults)
       }, [searchResult, numResults]
     )
+
+    // Auto-run when navigated with a keyword param (e.g., from keyword history).
+    useEffect(() => {
+      const paramKeyword = params?.keyword;
+      if (typeof paramKeyword === 'string' && paramKeyword.trim() && paramKeyword !== keyword) {
+        onChangeKeyword(paramKeyword);
+        getSearchFromKeyword(paramKeyword);
+      }
+    }, [params?.keyword]);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: "center"}}>
