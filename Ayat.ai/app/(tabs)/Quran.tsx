@@ -2,16 +2,36 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import Surahs from "@/utils/Surahs.json";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Quran() {
   const router = useRouter();
+  const storeLastSurah = async (index: Number) => {
+    await AsyncStorage.setItem("LastSurahViewed", index.toString());
+  }
+
   return (
     <ScrollView style={styles.container}>
+      <TouchableOpacity 
+        style={[styles.surahCard, {alignContent : "center"}]} 
+        onPress={async () => {
+          const lastSurah = await AsyncStorage.getItem("LastSurahViewed");
+          if (lastSurah){
+            router.push(`/Chapter?surahStr=${lastSurah}`)
+          }
+        }}>
+          <Text>Continue Reading...</Text>
+      </TouchableOpacity>
+
       {Surahs.map((surah, idx) => (
         <TouchableOpacity 
-          key={idx} 
-          style={styles.surahCard} 
-          onPress={() => router.push(`/Chapter?surahStr=${idx + 1}`)}
+            key={idx} 
+            style={styles.surahCard} 
+            onPress={() => {
+              storeLastSurah(idx+1)
+              router.push(`/Chapter?surahStr=${idx + 1}`)
+            }
+          }
         >
           <Text style={styles.surahNumber}>{surah.SurahInfo.split(".")[0]}</Text>
           <View style={styles.surahInfo}>
