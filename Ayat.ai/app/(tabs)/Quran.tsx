@@ -1,13 +1,39 @@
-import React from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import Surahs from "@/utils/Surahs.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Quran() {
   const router = useRouter();
+
   const storeLastSurah = async (index: Number) => {
-    await AsyncStorage.setItem("LastSurahViewed", index.toString());
+    await AsyncStorage.setItem("LastSurahViewed", (Number(index)).toString());
+  }
+
+  const [lastSurah, setLastSurah] = useState<string | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      let isActive = true;
+
+      const loadLastSurah = async () => {
+        const temp = await AsyncStorage.getItem("LastSurahViewed");
+        if (isActive) setLastSurah(temp);
+      };
+
+      loadLastSurah();
+
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+
+  let lastSurahName;
+  if (lastSurah) {
+    lastSurahName = Surahs[Number(lastSurah) - 1]["SurahNameTransliteration"]
   }
 
   return (
@@ -15,12 +41,12 @@ export default function Quran() {
       <TouchableOpacity 
         style={[styles.surahCard, {alignContent : "center"}]} 
         onPress={async () => {
-          const lastSurah = await AsyncStorage.getItem("LastSurahViewed");
+          
           if (lastSurah){
             router.push(`/Chapter?surahStr=${lastSurah}`)
           }
         }}>
-          <Text>Continue Reading...</Text>
+          <Text>Continue Reading Surah {lastSurah ? lastSurahName: " "}... </Text>
       </TouchableOpacity>
 
       {Surahs.map((surah, idx) => (
