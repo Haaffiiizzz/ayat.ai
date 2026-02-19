@@ -2,6 +2,8 @@ import { useLocalSearchParams } from "expo-router";
 import { View, Text, ScrollView, StyleSheet } from "react-native";
 import Surahs from "@/utils/FullDataset.json";
 import { useFonts } from "expo-font";
+import { useEffect, useRef } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // export const unstable_settings = {
 //   tabBarStyle: { display: 'none' },
@@ -18,14 +20,55 @@ export default function Chapter() {
 
   const [fontsLoaded] = useFonts({
   Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
-});
+  });
+
+  const scrollViewRef = useRef(null); // references our scrollview 
+
+
+  const scrollToSavedPosition = async () => {
+    // retrieve y coords of where user last scrolled and last surah viewed
+    const LastSurahY = await AsyncStorage.getItem("LastSurahScrollPositionY")
+    if (LastSurahY){
+      // small delay so content settles before restoring position
+      await new Promise((resolve) => setTimeout(resolve, 750));
+      scrollViewRef.current?.scrollTo({y: Number(LastSurahY), animated: true})
+    }
+  }
+
+  useEffect(() => {
+    const restoreAndStoreLastSurah = async () => {
+      
+      const LastSurahViewed = await AsyncStorage.getItem("LastSurahViewed");
+      if (Number(LastSurahViewed) == surahID + 1){
+        scrollToSavedPosition();
+      }
+
+      // store only after entering the chapter 
+      await AsyncStorage.setItem("LastSurahViewed", (surahID + 1).toString());
+    }
+
+    restoreAndStoreLastSurah();
+  }, [surahID])
+
+  
+  const storeScroll = async (event) => {
+    //stores the y coordinate whenever a scroll happens. 
+    //called from onscroll in ScrollView
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    await AsyncStorage.setItem("LastSurahScrollPositionY", currentScrollY.toString());
+    console.log(currentScrollY.toString())
+  }
 
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={{ paddingBottom: 60 }}
       showsVerticalScrollIndicator={false}
+      onScroll={storeScroll}
+      scrollEventThrottle={100}
+      ref={scrollViewRef}
     >
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.name}>{surahData.name}</Text>

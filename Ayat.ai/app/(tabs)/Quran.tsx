@@ -8,10 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function Quran() {
   const router = useRouter();
 
-  const storeLastSurah = async (index: Number) => {
-    await AsyncStorage.setItem("LastSurahViewed", (Number(index)).toString());
-  }
-
   const [lastSurah, setLastSurah] = useState<string | null>(null);
 
   useFocusEffect(
@@ -54,7 +50,6 @@ export default function Quran() {
             key={idx} 
             style={styles.surahCard} 
             onPress={() => {
-              storeLastSurah(idx+1)
               router.push(`/Chapter?surahStr=${idx + 1}`)
             }
           }
