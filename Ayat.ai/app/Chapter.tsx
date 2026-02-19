@@ -12,8 +12,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function Chapter() {
-  const { surahStr } = useLocalSearchParams();
+  const { surahStr, trackProgress } = useLocalSearchParams();
   const surahID = Number(surahStr)-1;
+  const shouldTrackProgress = Array.isArray(trackProgress) ? trackProgress[0] === "1" : trackProgress === "1";
   const surahData = Surahs[surahID];    
   if (!surahData)
     return <Text style={styles.fallback}>Chapter not found.</Text>;
@@ -21,6 +22,8 @@ export default function Chapter() {
   const [fontsLoaded] = useFonts({
   Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
+
+  if (!fontsLoaded) return null;
 
   const scrollViewRef = useRef(null); // references our scrollview 
 
@@ -37,6 +40,7 @@ export default function Chapter() {
 
   useEffect(() => {
     const restoreAndStoreLastSurah = async () => {
+      if (!shouldTrackProgress) return;
       
       const LastSurahViewed = await AsyncStorage.getItem("LastSurahViewed");
       if (Number(LastSurahViewed) == surahID + 1){
@@ -48,15 +52,15 @@ export default function Chapter() {
     }
 
     restoreAndStoreLastSurah();
-  }, [surahID])
+  }, [surahID, shouldTrackProgress])
 
   
   const storeScroll = async (event) => {
+    if (!shouldTrackProgress) return;
     //stores the y coordinate whenever a scroll happens. 
     //called from onscroll in ScrollView
     const currentScrollY = event.nativeEvent.contentOffset.y;
     await AsyncStorage.setItem("LastSurahScrollPositionY", currentScrollY.toString());
-    console.log(currentScrollY.toString())
   }
 
   return (
