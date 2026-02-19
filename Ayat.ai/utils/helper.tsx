@@ -1,11 +1,28 @@
+import * as FileSystem from 'expo-file-system/legacy';
+
 export async function sendAudioToAPI(file: string) {
   try {
+    if (!file) {
+      console.error('No file provided to sendAudioToAPI');
+      return null;
+    }
+
+    const normalizedUri = file.startsWith('file://') ? file : `file://${file}`;
+
+    // File existence check (legacy API explicitly)
+    const info = await FileSystem.getInfoAsync(normalizedUri);
+    console.log('Uploading audio:', normalizedUri, 'exists:', info.exists, 'size:', info.size);
+
+    if (!info.exists || !info.size || info.size <= 0) {
+      console.error('Audio file missing or empty, aborting upload.');
+      return null;
+    }
 
     const formData = new FormData();
     formData.append('audioFile', {
-      uri: file,
-      name: 'audio.m4a',
-      type: 'audio/m4a',
+      uri: normalizedUri,
+      name: 'recording.m4a',
+      type: 'audio/mp4',
     } as any);
 
     const response = await fetch('http://3.16.180.182:8000/uploadAudio/', {
@@ -19,11 +36,9 @@ export async function sendAudioToAPI(file: string) {
       return null;
     }
 
-    const data = await response.json();
-    return data;
-
+    return await response.json();
   } catch (error) {
-    console.error("Request failed:", error);
+    console.error('Request failed:', error);
     return null;
   }
 }
