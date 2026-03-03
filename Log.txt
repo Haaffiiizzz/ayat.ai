@@ -1,0 +1,12 @@
+2026-03-03
+Yesterday I tried to migrate to expo-audio from expo-av as it has better background recording. 
+Just after I pushed to GitHub, the app collapsed and I started getting an Internal Server Error.
+Naturally, I assumed my new changes was the cause of the issue and tried various ways to fix it. 
+I assumed the issue was with expo-audio sending a different data type to my API. I tried possible workarounds 
+but it still wouldn't work. 
+
+And so I decided to revert to the previous commit. Took me a while to be able to do that (just learned I could just create a branch and replace the main branch).
+I reverted to the previous working commit I remember and then it got interesting. It sill did not work!!
+Same error. I was now starting to get frustrated. I decided to investigate, running the API locally and connecting to that instead.
+And then I found the issue; my OPENAI credits had finished without me knowing (I do not remember getting an email about this). 
+Issue has been resolved finally and I am moving on with expo-audio. Just goes to show how the smallest issues can mess up bigger things. 
