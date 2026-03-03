@@ -40,10 +40,14 @@ export default function Quran() {
           
           if (lastSurah){
 <<<<<<< HEAD
+<<<<<<< HEAD
             router.push(`/Chapter?surahStr=${lastSurah}&trackProgress=1`) //need trackProgress later in chapter to decide whether to save last surah or not.
 =======
             router.push(`/Chapter?surahStr=${lastSurah}&trackProgress=1`)
 >>>>>>> 0711f5a (Add progress tracking for last viewed Surah and improve font loading in Chapter and VerseResult components)
+=======
+            router.push(`/Chapter?surahStr=${lastSurah}`)
+>>>>>>> parent of 0711f5a (Add progress tracking for last viewed Surah and improve font loading in Chapter and VerseResult components)
           }
         }}>
           <Text>Continue Reading Surah {lastSurah ? lastSurahName: " "}... </Text>
@@ -55,10 +59,14 @@ export default function Quran() {
             style={styles.surahCard} 
             onPress={() => {
 <<<<<<< HEAD
+<<<<<<< HEAD
               router.push(`/Chapter?surahStr=${idx + 1}&trackProgress=1`) //need trackProgress later in chapter to decide whether to save last surah or not.
 =======
               router.push(`/Chapter?surahStr=${idx + 1}&trackProgress=1`)
 >>>>>>> 0711f5a (Add progress tracking for last viewed Surah and improve font loading in Chapter and VerseResult components)
+=======
+              router.push(`/Chapter?surahStr=${idx + 1}`)
+>>>>>>> parent of 0711f5a (Add progress tracking for last viewed Surah and improve font loading in Chapter and VerseResult components)
             }
           }
         >

@@ -28,7 +28,6 @@ export default function VerseResult({ verse, keyword }: Props) {
   const [fontsLoaded] = useFonts({
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
-  if (!fontsLoaded) return null;
   const router = useRouter();
   const verseList = React.useMemo(() => Verses as VerseDetails[], []);
 
