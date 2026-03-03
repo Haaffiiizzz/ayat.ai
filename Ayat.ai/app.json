@@ -44,8 +44,13 @@
       [
         "expo-audio",
         {
-          "enableBackgroundRecording": true,
-          "microphonePermission": "Allow Ayat.ai to record your recitation through the microphone."
+          "microphonePermission": "Allow Ayat.ai to access your microphone."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Ayat.ai to access your microphone."
         }
       ]
     ],

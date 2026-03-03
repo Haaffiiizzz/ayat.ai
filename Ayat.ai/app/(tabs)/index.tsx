@@ -1,13 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
-import {
-  AudioModule,
-  RecordingPresets,
-  setAudioModeAsync,
-  useAudioRecorder,
-  useAudioRecorderState,
-} from 'expo-audio';
+import { Audio } from 'expo-av';
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
 import VerseResult from '@/components/VerseResult';
@@ -15,6 +9,7 @@ import { addSearchedVerse } from '@/utils/history';
 import RecordingIndicator from '@/components/RecordingIndicator';
 
 type RecordingItem = {
+  sound: Audio.Sound;
   duration: string;
   file: string | null;
 };
@@ -33,8 +28,7 @@ type APIResponse = {
 }
 
 export default function App() {
-  const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
-  const recorderState = useAudioRecorderState(recorder);
+  const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [recordedAudio, setRecordedAudio] = useState<RecordingItem | null>(null);
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [loading, setLoading] = useState(false);
@@ -43,16 +37,20 @@ export default function App() {
   async function startRecording() {
     setApiResponse(null)
     try {
-      const perm = await AudioModule.requestRecordingPermissionsAsync();
-      if (perm.granted) {
-        await setAudioModeAsync({
-          allowsRecording: true,
-          playsInSilentMode: true,
-          shouldPlayInBackground: true,
+      const perm = await Audio.requestPermissionsAsync();
+      if (perm.status === 'granted') {
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: true,
+          playsInSilentModeIOS: true,
         });
 
-        await recorder.prepareToRecordAsync();
-        recorder.record();
+        
+        const newRecording = new Audio.Recording();
+        await newRecording.prepareToRecordAsync(
+          Audio.RecordingOptionsPresets.HIGH_QUALITY
+        );
+        await newRecording.startAsync();
+        setRecording(newRecording);
       }
     } catch (err) {
       console.error('Failed to start recording', err);
@@ -60,22 +58,22 @@ export default function App() {
   }
 
   async function stopRecording() {
-    if (!recorderState.isRecording) return;
+    if (!recording) return;
 
-    await recorder.stop();
+    setRecording(null);
+    await recording.stopAndUnloadAsync();
 
-    const status = recorder.getStatus();
+    const { sound, status } = await recording.createNewLoadedSoundAsync();
     let duration = '0:00';
-    const durationMillis = recorderState.durationMillis || status.durationMillis || 0;
-    if (durationMillis > 0) {
-      duration = getDurationFormatted(durationMillis);
+    if ('isLoaded' in status && status.isLoaded && 'durationMillis' in status && typeof status.durationMillis === 'number') {
+      duration = getDurationFormatted(status.durationMillis);
     }
-    const file = recorder.uri ?? status.url;
+    const file = recording.getURI();
 
-    const newRecordingItem: RecordingItem = { duration, file };
+    const newRecordingItem: RecordingItem = { sound, duration, file };
     setRecordedAudio(newRecordingItem);
 
-    // Call API and set response
+    //Call API and setresponse
     if (file) {
       setLoading(true);
       const response = await sendAudioToAPI(file);
@@ -101,7 +99,7 @@ export default function App() {
       : `${minutes}:${seconds}`;
   }
 
-  const isInitial = !recorderState.isRecording && !loading && !apiResponse;
+  const isInitial = !recording && !loading && !apiResponse;
 
   return (
     <ScrollView
@@ -109,21 +107,16 @@ export default function App() {
       contentContainerStyle={isInitial ? styles.centeredContent : styles.content}
     >
       <TouchableOpacity
-        onPress={recorderState.isRecording ? stopRecording : startRecording}
+        onPress={recording ? stopRecording : startRecording}
         style={[
           styles.micButton,
-          recorderState.isRecording ? styles.micButtonActive : null,
+          recording ? styles.micButtonActive : null,
         ]}
       >
         <Text style={styles.micIcon}><FontAwesome name="microphone" size={40} color="white" />
 </Text>
       </TouchableOpacity>
-      {recorderState.isRecording && (
-        <RecordingIndicator
-          isRecording={recorderState.isRecording}
-          durationMillis={recorderState.durationMillis}
-        />
-      )}
+      {recording && <RecordingIndicator recording={recording} />}
 
 
       {/* {recordedAudio && (
@@ -132,6 +125,7 @@ export default function App() {
             Duration: {recordedAudio.duration}
           </Text>
           <View style={styles.buttonGroup}>
+            <Button onPress={() => recordedAudio.sound.replayAsync()} title="Play" />
             <View style={styles.spacer} />
             <Button onPress={() => setRecordedAudio(null)} title="Clear Recording" />
           </View>

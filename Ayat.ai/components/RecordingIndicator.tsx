@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { Audio } from 'expo-av';
 
 type Props = {
-  isRecording: boolean;
-  durationMillis?: number;
+  recording: Audio.Recording;
   barCount?: number;
 };
 
-export default function RecordingIndicator({ isRecording, durationMillis = 0, barCount = 5 }: Props) {
+export default function RecordingIndicator({ recording, barCount = 5 }: Props) {
   const [liveDuration, setLiveDuration] = useState<string>('0:00');
 
   // Animated equalizer bars
@@ -18,7 +18,7 @@ export default function RecordingIndicator({ isRecording, durationMillis = 0, ba
 
   // Start/stop looping animations while recording is active
   useEffect(() => {
-    if (isRecording) {
+    if (recording) {
       barAnimations.current = barScales.map((val, idx) => {
         const loop = Animated.loop(
           Animated.sequence([
@@ -47,25 +47,37 @@ export default function RecordingIndicator({ isRecording, durationMillis = 0, ba
       barScales.forEach((v) => v.setValue(0.4));
       barAnimations.current = [];
     };
-  }, [isRecording]);
+  }, [recording]);
 
   // Live timer update while recording
   useEffect(() => {
-    if (!isRecording) {
-      setLiveDuration('0:00');
-      return;
-    }
+    let interval: NodeJS.Timer | null = null;
 
-    const mins = Math.floor(durationMillis / 1000 / 60);
-    const secs = Math.floor((durationMillis / 1000) % 60);
-    setLiveDuration(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
-  }, [durationMillis, isRecording]);
+    const tick = async () => {
+      try {
+        if (recording) {
+          const status = await recording.getStatusAsync();
+          if ('isRecording' in status && (status as any).isRecording && 'durationMillis' in status) {
+            const ms = (status as any).durationMillis as number;
+            const mins = Math.floor(ms / 1000 / 60);
+            const secs = Math.floor((ms / 1000) % 60);
+            setLiveDuration(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
+          }
+        }
+      } catch {
+        // ignore transient status errors
+      }
+    };
 
-  useEffect(() => {
+    // initial immediate tick then interval
+    tick();
+    interval = setInterval(tick, 250);
+
     return () => {
+      if (interval) clearInterval(interval);
       setLiveDuration('0:00');
     };
-  }, []);
+  }, [recording]);
 
   return (
     <View style={styles.recordingIndicator}>
