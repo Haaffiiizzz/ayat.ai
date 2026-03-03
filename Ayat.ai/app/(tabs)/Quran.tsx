@@ -39,7 +39,7 @@ export default function Quran() {
         onPress={async () => {
           
           if (lastSurah){
-            router.push(`/Chapter?surahStr=${lastSurah}&trackProgress=1`)
+            router.push(`/Chapter?surahStr=${lastSurah}&trackProgress=1`) //need trackProgress later in chapter to decide whether to save last surah or not.
           }
         }}>
           <Text>Continue Reading Surah {lastSurah ? lastSurahName: " "}... </Text>
@@ -50,7 +50,7 @@ export default function Quran() {
             key={idx} 
             style={styles.surahCard} 
             onPress={() => {
-              router.push(`/Chapter?surahStr=${idx + 1}&trackProgress=1`)
+              router.push(`/Chapter?surahStr=${idx + 1}&trackProgress=1`) //need trackProgress later in chapter to decide whether to save last surah or not.
             }
           }
         >
