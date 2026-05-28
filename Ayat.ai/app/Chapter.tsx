@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import { View, Text, ScrollView, StyleSheet, FlatList } from "react-native";
 import Surahs from "@/utils/FullDataset.json";
 import { useFonts } from "expo-font";
 import { useEffect, useRef } from "react";
@@ -12,86 +12,168 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function Chapter() {
-  const { surahStr } = useLocalSearchParams();
-  const surahID = Number(surahStr)-1;
-  const surahData = Surahs[surahID];    
+
+  const { surahStr, verse } = useLocalSearchParams();
+  const surahID = Number(surahStr) - 1;
+  
+  const surahData = Surahs[surahID];
+  const targetVerseIndex = verse
+  ? surahData.verses.findIndex(
+      (v) => v.id === Number(verse)
+    )
+  : null;
   if (!surahData)
     return <Text style={styles.fallback}>Chapter not found.</Text>;
 
+  console.log(
+  "verse param:",
+  verse,
+  "first items:",
+  surahData.verses.slice(0, 5)
+);
   const [fontsLoaded] = useFonts({
-  Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
+    Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
 
-  const scrollViewRef = useRef(null); // references our scrollview 
+  
+  const flatListRef = useRef(null);
 
+  // -----------------------------
+  // Save scroll position (INDEX)
+  // -----------------------------
+  const storeScrollIndex = async (event) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
 
-  const scrollToSavedPosition = async () => {
-    // retrieve y coords of where user last scrolled and last surah viewed
-    const LastSurahY = await AsyncStorage.getItem("LastSurahScrollPositionY")
-    if (LastSurahY){
-      // small delay so content settles before restoring position
-      await new Promise((resolve) => setTimeout(resolve, 750));
-      scrollViewRef.current?.scrollTo({y: Number(LastSurahY), animated: true})
-    }
-  }
+    // approximate height per verse box
+    const ITEM_HEIGHT = 120;
+
+    const index = Math.floor(offsetY / ITEM_HEIGHT);
+
+    await AsyncStorage.setItem(
+      "LastReadVerseIndex",
+      index.toString()
+    );
+
+  };
+
+  // -----------------------------
+  // Restore scroll position
+  // -----------------------------
+  const scrollToIndex = (index) => {
+    if (index === null || index < 0) return;
+
+    setTimeout(() => {
+      flatListRef.current?.scrollToIndex({
+        index,
+        animated: true,
+      });
+    }, 500);
+  };
+
 
   useEffect(() => {
-    const restoreAndStoreLastSurah = async () => {
-      
-      const LastSurahViewed = await AsyncStorage.getItem("LastSurahViewed");
-      if (Number(LastSurahViewed) == surahID + 1){
-        scrollToSavedPosition();
+    const run = async () => {
+      const lastSurahViewed = await AsyncStorage.getItem("LastSurahViewed");
+
+      const sameSurah =
+        Number(lastSurahViewed) === Number(surahID + 1);
+
+      // CASE 1: If we came from index
+      if (targetVerseIndex !== null) {
+        console.log("did this")
+        scrollToIndex(targetVerseIndex);
       }
 
-      // store only after entering the chapter 
-      await AsyncStorage.setItem("LastSurahViewed", (surahID + 1).toString());
-    }
+      // CASE 2: If we came from last surah
+      else if (sameSurah) {
+        const savedIndex = await AsyncStorage.getItem("LastReadVerseIndex");
 
-    restoreAndStoreLastSurah();
-  }, [surahID])
+        if (savedIndex) {
+          scrollToIndex(Number(savedIndex));
+        }
+        await AsyncStorage.setItem(
+        "LastSurahViewed",
+        (surahID + 1).toString()
+      );
+      }
+      
+      await AsyncStorage.setItem("LastSurahViewed", surahStr)
+      // always update current surah
+      
+    };
 
-  
-  const storeScroll = async (event) => {
-    //stores the y coordinate whenever a scroll happens. 
-    //called from onscroll in ScrollView
-    const currentScrollY = event.nativeEvent.contentOffset.y;
-    await AsyncStorage.setItem("LastSurahScrollPositionY", currentScrollY.toString());
-    console.log(currentScrollY.toString())
-  }
+    run();
+  }, [surahID, targetVerseIndex]);
 
-  return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={{ paddingBottom: 60 }}
-      showsVerticalScrollIndicator={false}
-      onScroll={storeScroll}
-      scrollEventThrottle={100}
-      ref={scrollViewRef}
-    >
-
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.name}>{surahData.name}</Text>
-        <Text style={styles.transliteration}>{surahData.transliteration}</Text>
-        <Text style={styles.translation}>{surahData.translation}</Text>
-        <Text style={styles.meta}>
-          {surahData.type.toUpperCase()} • {surahData.total_verses} Verses
+  // -----------------------------
+  // Render verse
+  // -----------------------------
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.verseBox}>
+        <View style={styles.arabicRow}>
+          <Text style={styles.verseArabic}>{item.text}</Text>
+          <View style={styles.ayahBadge}>
+            <Text style={styles.ayahBadgeText}>{item.id}</Text>
+          </View>
+        </View>
+        <Text style={styles.verseTranslation}>
+          {item.translation}
         </Text>
       </View>
+    );
+  };
 
-      {/* Verses */}
-      {surahData.verses.map((verse) => (
-        <View key={verse.id} style={styles.verseBox}>
-          <View style={styles.arabicRow}>
-            <Text style={styles.verseArabic}>{verse.text}</Text>
-            <View style={styles.ayahBadge}>
-              <Text style={styles.ayahBadgeText}>{verse.id}</Text>
-            </View>
-          </View>
-          <Text style={styles.verseTranslation}>{verse.translation}</Text>
+  // -----------------------------
+  // Fix scrollToIndex edge cases
+  // -----------------------------
+  const handleScrollToIndexFailed = (info) => {
+    setTimeout(() => {
+      flatListRef.current?.scrollToIndex({
+        index: info.index,
+        animated: true,
+      });
+    }, 500);
+  };
+
+  return (
+    <FlatList
+      ref={flatListRef}
+      data={surahData.verses}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderItem}
+
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
+
+      onScroll={storeScrollIndex}
+      scrollEventThrottle={100}
+
+      onScrollToIndexFailed={handleScrollToIndexFailed}
+
+      // IMPORTANT: helps FlatList know positions
+      getItemLayout={(data, index) => ({
+        length: 120,
+        offset: 120 * index,
+        index,
+      })}
+
+      ListHeaderComponent={
+        <View style={styles.header}>
+          <Text style={styles.name}>{surahData.name}</Text>
+          <Text style={styles.transliteration}>
+            {surahData.transliteration}
+          </Text>
+          <Text style={styles.translation}>
+            {surahData.translation}
+          </Text>
+          <Text style={styles.meta}>
+            {surahData.type.toUpperCase()} •{" "}
+            {surahData.total_verses} Verses
+          </Text>
         </View>
-      ))}
-    </ScrollView>
+      }
+    />
   );
 }
 

@@ -93,9 +93,9 @@ export default function VerseResult({ verse, keyword }: Props) {
         </View>
 
         <Button
-          title="Go to Surah"
+          title="Go to Verse"
           onPress={() => {
-            router.push(`/Chapter?surahStr=${displayVerse.SurahNumber}`)
+            router.push(`/Chapter?surahStr=${displayVerse.SurahNumber}&verse=${displayVerse.VerseIndex}`)
             }}
         />
       </View>

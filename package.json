@@ -1,5 +1,13 @@
 {
   "dependencies": {
-    "expo": "^53.0.20"
+    "expo": "^53.0.27",
+    "react": "19.0.0",
+    "react-native": "0.79.6"
+  },
+  "exports": {
+    "./src/lib/TerminalReporter": {
+      "import": "./src/lib/TerminalReporter.js",
+      "require": "./src/lib/TerminalReporter.js"
+    }
   }
 }

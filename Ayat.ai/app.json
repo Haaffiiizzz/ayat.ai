@@ -9,7 +9,19 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.haaffiiizzz.Ayatai",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false, 
+        "NSAppTransportSecurity": {
+          "NSExceptionDomains": {
+            "3.16.180.182": {
+              "NSIncludesSubdomains": true,
+              "NSExceptionAllowsInsecureHTTPLoads": true
+            }
+          }
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -20,8 +32,8 @@
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.MODIFY_AUDIO_SETTINGS"
+        "android.permission.FOREGROUND_SERVICE_MICROPHONE",
+        "android.permission.POST_NOTIFICATIONS"
       ],
       "package": "com.haaffiiizzz.Ayatai"
     },
@@ -47,10 +59,17 @@
           "enableBackgroundRecording": true,
           "microphonePermission": "Allow Ayat.ai to record your recitation through the microphone."
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "6b6b3db6-52da-404b-955a-0094590846b5"
+      }
     }
   }
 }

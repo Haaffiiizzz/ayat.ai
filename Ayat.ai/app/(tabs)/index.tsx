@@ -49,6 +49,7 @@ export default function App() {
           allowsRecording: true,
           playsInSilentMode: true,
           shouldPlayInBackground: true,
+          allowsBackgroundRecording: true,
         });
 
         await recorder.prepareToRecordAsync();
