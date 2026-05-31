@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Button, TouchableOpacity } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "expo-router";
 import { getHistory, clearHistory, HistoryItem, formatTime } from '@/utils/history';
 import { useRouter } from 'expo-router';
 import KeywordHistoryItem from '../KeywordHistoryItem';
