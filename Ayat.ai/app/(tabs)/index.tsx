@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
 import {
   AudioModule,
@@ -11,8 +11,10 @@ import {
 import { sendAudioToAPI } from '@/utils/helper';
 import { FontAwesome } from '@expo/vector-icons';
 import VerseResult from '@/components/VerseResult';
-import { addSearchedVerse } from '@/utils/history';
+import { addSearchedVerse, formatTime, getHistory } from '@/utils/history';
+import type { HistoryItem } from '@/utils/history';
 import RecordingIndicator from '@/components/RecordingIndicator';
+import { useFocusEffect, useRouter } from 'expo-router';
 
 type RecordingItem = {
   duration: string;
@@ -33,15 +35,30 @@ type APIResponse = {
 }
 
 export default function App() {
+  const router = useRouter();
   const recorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY);
   const recorderState = useAudioRecorderState(recorder);
   const [recordedAudio, setRecordedAudio] = useState<RecordingItem | null>(null);
   const [apiResponse, setApiResponse] = useState<APIResponse | null>(null)
   const [loading, setLoading] = useState(false);
+  const [audioHistory, setAudioHistory] = useState<HistoryItem[]>([]);
+  const [showAudioHistory, setShowAudioHistory] = useState(true);
+
+  const loadAudioHistory = useCallback(async () => {
+    const history = await getHistory();
+    setAudioHistory(history);
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      loadAudioHistory();
+    }, [loadAudioHistory])
+  );
 
 
   async function startRecording() {
     setApiResponse(null)
+    setShowAudioHistory(false);
     try {
       const perm = await AudioModule.requestRecordingPermissionsAsync();
       if (perm.granted) {
@@ -85,6 +102,7 @@ export default function App() {
       if (response && response.VerseID) {
         try {
           await addSearchedVerse(response as any, "Index"); //from utils/history
+          await loadAudioHistory();
         } catch (e) {
           // non-fatal
           console.warn('Failed to add to history', e);
@@ -102,7 +120,8 @@ export default function App() {
       : `${minutes}:${seconds}`;
   }
 
-  const isInitial = !recorderState.isRecording && !loading && !apiResponse;
+  const shouldShowAudioHistory = showAudioHistory && audioHistory.length > 0;
+  const isInitial = !recorderState.isRecording && !loading && !apiResponse && !shouldShowAudioHistory;
 
   return (
     <ScrollView
@@ -124,6 +143,43 @@ export default function App() {
           isRecording={recorderState.isRecording}
           durationMillis={recorderState.durationMillis}
         />
+      )}
+
+      {!showAudioHistory && !recorderState.isRecording && !loading && (
+        <View style={styles.historyToggle}>
+          <Button title="Show audio history" onPress={() => setShowAudioHistory(true)} />
+        </View>
+      )}
+
+      {shouldShowAudioHistory && (
+        <View style={styles.historySection}>
+          <Text style={styles.historyTitle}>Recent Audio Searches</Text>
+          {audioHistory.map((item, idx) => (
+            <TouchableOpacity
+              style={styles.historyItem}
+              key={item.VerseID || `audio-${idx}`}
+              onPress={() => {
+                router.push({
+                  pathname: '../HistoryItem',
+                  params: { data: JSON.stringify(item) },
+                });
+              }}
+            >
+              <View style={styles.historyRow}>
+                <View style={styles.historyTextContainer}>
+                  <Text style={styles.historyItemTitle}>
+                    {item.SurahNameTransliteration}: {item.VerseNumber}
+                  </Text>
+                  <Text style={styles.historySubtitle} numberOfLines={1}>
+                    {item.VerseEnglish}
+                  </Text>
+                </View>
+
+                <Text style={styles.historyTime}>{formatTime(item.searchedAt)}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       )}
 
 
@@ -285,6 +341,62 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: '#fff',
   }, 
+
+  historyToggle: {
+    width: '90%',
+    marginBottom: 12,
+  },
+
+  historySection: {
+    width: '100%',
+    marginBottom: 16,
+  },
+
+  historyTitle: {
+    width: '90%',
+    alignSelf: 'center',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+
+  historyItem: {
+    width: '100%',
+  },
+
+  historyRow: {
+    width: '100%',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  historyTextContainer: {
+    flex: 1,
+    paddingRight: 12,
+  },
+
+  historyItemTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+
+  historySubtitle: {
+    fontSize: 14,
+    color: '#555',
+  },
+
+  historyTime: {
+    fontSize: 12,
+    color: '#888',
+  },
 
   loadingContainer: {
   marginTop: 20,

@@ -1,39 +1,57 @@
 import { Text, TextInput, ScrollView, StyleSheet, Button, View, ActivityIndicator } from "react-native";
 import { keywordSearch, embeddingSearch } from "@/utils/helper";
-import React , { useState, useEffect } from "react";
+import React , { useState, useEffect, useCallback } from "react";
 import VerseResult from "@/components/VerseResult";
 import { useFonts } from "expo-font";
-import { addSearchedVerse } from "@/utils/history";
-import { useLocalSearchParams } from "expo-router";
+import { addSearchedVerse, getHistory } from "@/utils/history";
+import type { HistoryItem } from "@/utils/history";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
+import KeywordHistoryItem from "../KeywordHistoryItem";
 
 type verseDetails = {
   "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
 }
 
 export default function Search () {
+    const router = useRouter();
     const [keyword, onChangeKeyword] = useState('');
     const [searchResult, setSearchResult] = useState<Array<any> | null>([])
     const [numResults, setNumResults] = useState<number | null>(0)
     const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [activeQuery, setActiveQuery] = useState<string>('')
+    const [keywordHistory, setKeywordHistory] = useState<HistoryItem[]>([])
+    const [showKeywordHistory, setShowKeywordHistory] = useState(true)
     const params = useLocalSearchParams();
 
     const [fontsLoaded] = useFonts({
       Uthmanic: require("../../assets/fonts/UthmanTN_v2-0.ttf"),
     });
 
+    const loadKeywordHistory = useCallback(async () => {
+        const history = await getHistory("keyword");
+        setKeywordHistory(history);
+    }, []);
+
+    useFocusEffect(
+      useCallback(() => {
+        loadKeywordHistory();
+      }, [loadKeywordHistory])
+    );
+
     const getSearchFromKeyword = async (keyword: string) => {
         const trimmedKeyword = keyword.trim()
         if (!trimmedKeyword) {
           return
         }
+        setShowKeywordHistory(false)
         setIsLoading(true)
         const result = await embeddingSearch(trimmedKeyword);
         const topResult = Array.isArray(result) ? result[0] : result;
 
         try {
           await addSearchedVerse(topResult ?? null, "keyword", trimmedKeyword);
+          await loadKeywordHistory();
         } catch (e) {
           // non-fatal
           console.warn('Failed to add to history', e);
@@ -81,6 +99,30 @@ export default function Search () {
                 disabled={isLoading || !keyword.trim()}
               />
             </View>
+
+            {!showKeywordHistory && !isLoading && (
+              <View style={styles.historyToggle}>
+                <Button title="Show search history" onPress={() => setShowKeywordHistory(true)} />
+              </View>
+            )}
+
+            {showKeywordHistory && keywordHistory.length > 0 && (
+              <View style={styles.historySection}>
+                <Text style={styles.historyTitle}>Recent Text Searches</Text>
+                {keywordHistory.map((item, idx) => (
+                  <KeywordHistoryItem
+                    key={item.VerseID || `${item.searchTerm || 'keyword'}-${idx}`}
+                    item={item}
+                    onPress={(term) =>
+                      router.push({
+                        pathname: '/(tabs)/Search',
+                        params: { keyword: term },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            )}
 
             {isLoading && (
               <View style={styles.loadingContainer}>
@@ -152,6 +194,25 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       borderColor: '#eaeaea',
       backgroundColor: '#f9f9f9',
+    },
+
+    historyToggle: {
+      width: '90%',
+      marginBottom: 12,
+    },
+
+    historySection: {
+      width: '100%',
+      marginBottom: 16,
+    },
+
+    historyTitle: {
+      width: '90%',
+      alignSelf: 'center',
+      fontSize: 16,
+      fontWeight: '700',
+      color: '#111827',
+      marginBottom: 8,
     },
 
     responseRow: {
