@@ -70,13 +70,14 @@ export default function Chapter() {
 
   // Restore scroll position
 
-  const scrollToIndex = (index, fromTarget = false) => {
+  const scrollToIndex = (index, viewPosition = 0) => {
     if (index === null || index < 0) return;
 
     setTimeout(() => {
       flatListRef.current?.scrollToIndex({
         index: index,
         animated: true,
+        viewPosition,
       });
     }, 500);
   };
@@ -93,14 +94,12 @@ export default function Chapter() {
 
       // CASE 1: If we came from index
       if (targetVerseIndex !== null) {
-        console.log("Target VErses Index is: ", targetVerseIndex);
-        scrollToIndex(targetVerseIndex);
+        scrollToIndex(targetVerseIndex, 0.5);
       }
 
       // CASE 2: If we came from last surah
       else if (sameSurah) {
         const savedIndex = await AsyncStorage.getItem(lastReadVerseIndexKey);
-        console.log("We came from last surah")
         if (savedIndex) {
           scrollToIndex(Number(savedIndex));
         }
@@ -148,23 +147,24 @@ export default function Chapter() {
   // Fix scrollToIndex edge cases
 
   const handleScrollToIndexFailed = (info) => {
-  const wait = new Promise((resolve) => setTimeout(resolve, 500));
+    const wait = new Promise((resolve) => setTimeout(resolve, 500));
+    const viewPosition = targetVerseIndex !== null ? 0.5 : 0;
 
-  wait.then(() => {
-    flatListRef.current?.scrollToOffset({
-      offset: info.averageItemLength * info.index,
-      animated: true,
-    });
-
-    setTimeout(() => {
-      flatListRef.current?.scrollToIndex({
-        index: info.index,
+    wait.then(() => {
+      flatListRef.current?.scrollToOffset({
+        offset: info.averageItemLength * info.index,
         animated: true,
-        viewPosition: 0,
       });
-    }, 500);
-  });
-};
+
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({
+          index: info.index,
+          animated: true,
+          viewPosition,
+        });
+      }, 500);
+    });
+  };
 
   return (
     <FlatList
