@@ -1,12 +1,11 @@
+
+import * as FileSystem from "expo-file-system"
 export async function sendAudioToAPI(file: string) {
   try {
 
     const formData = new FormData();
-    formData.append('audioFile', {
-      uri: file,
-      name: 'audio.m4a',
-      type: 'audio/m4a',
-    } as any);
+
+    formData.append("audioFile", new FileSystem.File(file));
 
     const response = await fetch('http://10.0.0.57:8000/uploadAudio/', {
       method: 'POST',

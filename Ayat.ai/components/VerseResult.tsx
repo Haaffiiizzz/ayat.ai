@@ -32,20 +32,26 @@ export default function VerseResult({ verse, keyword }: Props) {
   const verseList = React.useMemo(() => Verses as VerseDetails[], []);
 
 
-  let currIdx = typeof verse?.VerseIndex === "number" ? verse.VerseIndex : -1;
-  currIdx = currIdx - 1;
+  const currIdx =
+    typeof verse?.VerseIndex === "number"
+      ? verse.VerseIndex - 1
+      : -1;
 
-  const prevVerse = currIdx > 0 ? verseList[currIdx - 1] : undefined;
+  const prevVerse =
+    currIdx > 0
+      ? verseList[currIdx - 1]
+      : undefined;
+
   const nextVerse =
-    currIdx >= 0 && currIdx < verseList.length - 1 ? verseList[currIdx + 1] : undefined;
+    currIdx >= 0 && currIdx < verseList.length - 1
+      ? verseList[currIdx + 1]
+      : undefined;
 
+  const displayVerse =
+    currIdx >= 0
+      ? { ...verse, ...verseList[currIdx] }
+      : verse;
 
-  const displayVerse = React.useMemo<VerseDetails>(() => {
-    if (currIdx >= 0) {
-      return { ...verse, ...verseList[currIdx] };
-    }
-    return verse;
-  }, [currIdx, verse, verseList]);
 
 
   return (
@@ -95,7 +101,7 @@ export default function VerseResult({ verse, keyword }: Props) {
         <Button
           title="Go to Verse"
           onPress={() => {
-            router.push(`/Chapter?surahStr=${displayVerse.SurahNumber}&verse=${displayVerse.VerseIndex}`)
+            router.push(`/Chapter?surahStr=${displayVerse.SurahNumber}&verse=${displayVerse.VerseNumber}`)
             }}
         />
       </View>

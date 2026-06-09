@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from "expo-router";
-import { View, Text, ScrollView, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import Surahs from "@/utils/FullDataset.json";
 import { useFonts } from "expo-font";
 import { useEffect, useRef } from "react";
@@ -25,12 +25,7 @@ export default function Chapter() {
   if (!surahData)
     return <Text style={styles.fallback}>Chapter not found.</Text>;
 
-  console.log(
-  "verse param:",
-  verse,
-  "first items:",
-  surahData.verses.slice(0, 5)
-);
+
   const [fontsLoaded] = useFonts({
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
@@ -38,33 +33,49 @@ export default function Chapter() {
   
   const flatListRef = useRef(null);
 
-  // -----------------------------
   // Save scroll position (INDEX)
-  // -----------------------------
-  const storeScrollIndex = async (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
 
-    // approximate height per verse box
-    const ITEM_HEIGHT = 120;
+  const lastReadVerseIndexKey = `LastReadVerseIndexV2-${surahID + 1}`;
+  const lastReadVerseIndexKeyRef = useRef(lastReadVerseIndexKey);
+  const shouldSaveLastReadRef = useRef(false);
 
-    const index = Math.floor(offsetY / ITEM_HEIGHT);
+  useEffect(() => {
+    lastReadVerseIndexKeyRef.current = lastReadVerseIndexKey;
+  }, [lastReadVerseIndexKey, targetVerseIndex]);
 
-    await AsyncStorage.setItem(
-      "LastReadVerseIndex",
-      index.toString()
-    );
+  const enableLastReadSaving = () => {
+    if (targetVerseIndex !== null) return;
 
+    setTimeout(() => {
+      shouldSaveLastReadRef.current = true;
+    }, 1500);
   };
 
-  // -----------------------------
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    if (!shouldSaveLastReadRef.current) return;
+
+    const firstVisible = viewableItems[0];
+
+    if (!firstVisible || firstVisible.index == null) return;
+
+    AsyncStorage.setItem(
+      lastReadVerseIndexKeyRef.current,
+      firstVisible.index.toString()
+    );
+  }).current;
+
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 50,
+  }).current;
+
   // Restore scroll position
-  // -----------------------------
-  const scrollToIndex = (index) => {
+
+  const scrollToIndex = (index, fromTarget = false) => {
     if (index === null || index < 0) return;
 
     setTimeout(() => {
       flatListRef.current?.scrollToIndex({
-        index,
+        index: index,
         animated: true,
       });
     }, 500);
@@ -73,6 +84,8 @@ export default function Chapter() {
 
   useEffect(() => {
     const run = async () => {
+      shouldSaveLastReadRef.current = false;
+
       const lastSurahViewed = await AsyncStorage.getItem("LastSurahViewed");
 
       const sameSurah =
@@ -80,35 +93,42 @@ export default function Chapter() {
 
       // CASE 1: If we came from index
       if (targetVerseIndex !== null) {
-        console.log("did this")
+        console.log("Target VErses Index is: ", targetVerseIndex);
         scrollToIndex(targetVerseIndex);
       }
 
       // CASE 2: If we came from last surah
       else if (sameSurah) {
-        const savedIndex = await AsyncStorage.getItem("LastReadVerseIndex");
-
+        const savedIndex = await AsyncStorage.getItem(lastReadVerseIndexKey);
+        console.log("We came from last surah")
         if (savedIndex) {
           scrollToIndex(Number(savedIndex));
         }
+        enableLastReadSaving();
         await AsyncStorage.setItem(
         "LastSurahViewed",
         (surahID + 1).toString()
       );
       }
       
-      await AsyncStorage.setItem("LastSurahViewed", surahStr)
-      // always update current surah
+      else{
+        //This way we dont update if Case 1 happens
+        await AsyncStorage.setItem("LastSurahViewed", surahStr)
+        enableLastReadSaving();
+      }
+ 
       
     };
 
     run();
-  }, [surahID, targetVerseIndex]);
+  }, [surahID, targetVerseIndex, lastReadVerseIndexKey]);
 
-  // -----------------------------
+
   // Render verse
-  // -----------------------------
+
   const renderItem = ({ item }) => {
+    
+
     return (
       <View style={styles.verseBox}>
         <View style={styles.arabicRow}>
@@ -124,17 +144,27 @@ export default function Chapter() {
     );
   };
 
-  // -----------------------------
+
   // Fix scrollToIndex edge cases
-  // -----------------------------
+
   const handleScrollToIndexFailed = (info) => {
+  const wait = new Promise((resolve) => setTimeout(resolve, 500));
+
+  wait.then(() => {
+    flatListRef.current?.scrollToOffset({
+      offset: info.averageItemLength * info.index,
+      animated: true,
+    });
+
     setTimeout(() => {
       flatListRef.current?.scrollToIndex({
         index: info.index,
         animated: true,
+        viewPosition: 0,
       });
     }, 500);
-  };
+  });
+};
 
   return (
     <FlatList
@@ -146,17 +176,11 @@ export default function Chapter() {
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{ padding: 16, paddingBottom: 60 }}
 
-      onScroll={storeScrollIndex}
-      scrollEventThrottle={100}
+      onViewableItemsChanged={onViewableItemsChanged}
+      viewabilityConfig={viewabilityConfig}
 
       onScrollToIndexFailed={handleScrollToIndexFailed}
 
-      // IMPORTANT: helps FlatList know positions
-      getItemLayout={(data, index) => ({
-        length: 120,
-        offset: 120 * index,
-        index,
-      })}
 
       ListHeaderComponent={
         <View style={styles.header}>
