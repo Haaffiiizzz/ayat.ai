@@ -8,12 +8,13 @@ type Props = {
 };
 
 export default function RecordingIndicator({ isRecording, durationMillis = 0, barCount = 5 }: Props) {
-  const [liveDuration, setLiveDuration] = useState<string>('0:00');
+  const elapsedSeconds = isRecording ? Math.floor(durationMillis / 1000) : 0;
+  const liveDuration = `${Math.floor(elapsedSeconds / 60)}:${String(elapsedSeconds % 60).padStart(2, '0')}`;
 
   // Animated equalizer bars
-  const barScales = useRef(
+  const [barScales] = useState(() =>
     Array.from({ length: barCount }, () => new Animated.Value(0.4))
-  ).current;
+  );
   const barAnimations = useRef<Animated.CompositeAnimation[]>([]);
 
   // Start/stop looping animations while recording is active
@@ -47,25 +48,7 @@ export default function RecordingIndicator({ isRecording, durationMillis = 0, ba
       barScales.forEach((v) => v.setValue(0.4));
       barAnimations.current = [];
     };
-  }, [isRecording]);
-
-  // Live timer update while recording
-  useEffect(() => {
-    if (!isRecording) {
-      setLiveDuration('0:00');
-      return;
-    }
-
-    const mins = Math.floor(durationMillis / 1000 / 60);
-    const secs = Math.floor((durationMillis / 1000) % 60);
-    setLiveDuration(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
-  }, [durationMillis, isRecording]);
-
-  useEffect(() => {
-    return () => {
-      setLiveDuration('0:00');
-    };
-  }, []);
+  }, [isRecording, barScales]);
 
   return (
     <View style={styles.recordingIndicator}>

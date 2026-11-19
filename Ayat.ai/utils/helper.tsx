@@ -10,7 +10,7 @@ export async function sendAudioToAPI(file: string) {
     const response = await fetch('http://10.0.0.57:8000/uploadAudio/', {
       method: 'POST',
       body: formData,
-    });
+    }); 
 
     if (!response.ok) {
       const errorText = await response.text();

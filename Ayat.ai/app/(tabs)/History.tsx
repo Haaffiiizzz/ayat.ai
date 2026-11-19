@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Button, TouchableOpacity } from 're
 import { useFocusEffect } from "expo-router";
 import { getHistory, clearHistory, HistoryItem, formatTime } from '@/utils/history';
 import { useRouter } from 'expo-router';
-import KeywordHistoryItem from '../KeywordHistoryItem';
+import KeywordHistoryItem from '@/components/KeywordHistoryItem';
 
 type CombinedHistory = HistoryItem & { searchType?: string };
 

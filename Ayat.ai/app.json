@@ -65,6 +65,7 @@
       "expo-asset"
     ],
     "experiments": {
+      "reactCompiler": true,
       "typedRoutes": true
     },
     "extra": {

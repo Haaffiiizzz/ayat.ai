@@ -8,14 +8,14 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="home" color={typeof color === 'number' ? undefined : color ?? undefined} />,
         }}
       />
       <Tabs.Screen
         name="Search"
         options={{
           title: 'Keyword',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="search" color={color} />,
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="search" color={typeof color === 'number' ? undefined : color ?? undefined} />,
         }}
       />
     </Tabs>

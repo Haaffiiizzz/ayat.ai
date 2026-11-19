@@ -1,12 +1,12 @@
 import { Text, TextInput, ScrollView, StyleSheet, Button, View, ActivityIndicator } from "react-native";
-import { keywordSearch, embeddingSearch } from "@/utils/helper";
-import React , { useState, useEffect, useCallback } from "react";
+import { embeddingSearch } from "@/utils/helper";
+import React , { useState, useCallback } from "react";
 import VerseResult from "@/components/VerseResult";
 import { useFonts } from "expo-font";
 import { addSearchedVerse, getHistory } from "@/utils/history";
 import type { HistoryItem } from "@/utils/history";
 import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
-import KeywordHistoryItem from "../KeywordHistoryItem";
+import KeywordHistoryItem from "@/components/KeywordHistoryItem";
 
 type verseDetails = {
   "SurahNumber": number, "VerseNumber": number, "VerseWithHarakat": string, "VerseEnglish": string, "VerseIndex": number
@@ -16,8 +16,8 @@ export default function Search () {
     const router = useRouter();
     const [keyword, onChangeKeyword] = useState('');
     const [searchResult, setSearchResult] = useState<Array<any> | null>([])
-    const [numResults, setNumResults] = useState<number | null>(0)
-    const [displayedResults, setDisplayedResults] = useState<Array<any> | null>([])
+    const [numResults, setNumResults] = useState(0)
+    const displayedResults = searchResult?.slice(0, numResults);
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [activeQuery, setActiveQuery] = useState<string>('')
     const [keywordHistory, setKeywordHistory] = useState<HistoryItem[]>([])
@@ -39,7 +39,7 @@ export default function Search () {
       }, [loadKeywordHistory])
     );
 
-    const getSearchFromKeyword = async (keyword: string) => {
+    const getSearchFromKeyword = useCallback(async (keyword: string) => {
         const trimmedKeyword = keyword.trim()
         if (!trimmedKeyword) {
           return
@@ -63,23 +63,16 @@ export default function Search () {
         const newNumResults = resultLength >= 10 ? 10 : resultLength
         setNumResults(newNumResults)
         setActiveQuery(trimmedKeyword)
-    }
-
-    useEffect( 
-      () => {
-        const newDisplayedResults = searchResult ? searchResult.slice(0, Number(numResults)) : null
-        setDisplayedResults(newDisplayedResults)
-      }, [searchResult, numResults]
-    )
+    }, [loadKeywordHistory]);
 
     // Auto-run when navigated with a keyword param (e.g., from keyword history).
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
       const paramKeyword = params?.keyword;
-      if (typeof paramKeyword === 'string' && paramKeyword.trim() && paramKeyword !== keyword) {
+      if (typeof paramKeyword === 'string' && paramKeyword.trim()) {
         onChangeKeyword(paramKeyword);
         getSearchFromKeyword(paramKeyword);
       }
-    }, [params?.keyword]);
+    }, [params?.keyword, getSearchFromKeyword]));
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: "center"}}>
@@ -155,7 +148,7 @@ export default function Search () {
               ))
             }
 
-            { numResults < searchResult?.length &&
+            { numResults < (searchResult?.length ?? 0) &&
               <Button
                   title="Show More Results" 
                   onPress={ async () => { setNumResults(numResults + 10) }} 

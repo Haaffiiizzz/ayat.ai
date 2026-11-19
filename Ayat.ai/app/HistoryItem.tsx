@@ -3,8 +3,10 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 export default function HistoryItem(){
-    const { data } = useLocalSearchParams();
-    const item = JSON.parse(data);
+    const { data } = useLocalSearchParams<{ data?: string | string[] }>();
+    const serializedItem = Array.isArray(data) ? data[0] : data;
+    if (!serializedItem) return null;
+    const item = JSON.parse(serializedItem);
 
     return (
         <ScrollView style={styles.container} contentContainerStyle={{alignItems: 'center',

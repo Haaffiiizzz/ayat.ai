@@ -1,8 +1,9 @@
 import { useLocalSearchParams } from "expo-router";
 import { View, Text, StyleSheet, FlatList } from "react-native";
+import type { FlatListProps, ListRenderItemInfo } from "react-native";
 import Surahs from "@/utils/FullDataset.json";
 import { useFonts } from "expo-font";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // export const unstable_settings = {
@@ -11,27 +12,36 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // };
 
 
+type Surah = (typeof Surahs)[number];
+type Verse = Surah['verses'][number];
+const viewabilityConfig = { itemVisiblePercentThreshold: 50 };
+
 export default function Chapter() {
 
   const { surahStr, verse } = useLocalSearchParams();
   const surahID = Number(surahStr) - 1;
   
   const surahData = Surahs[surahID];
+  if (!surahData)
+    return <Text style={styles.fallback}>Chapter not found.</Text>;
+
+  return <ChapterReader key={surahID} surahData={surahData} surahID={surahID} verse={Number(verse) || null} />;
+}
+
+function ChapterReader({ surahData, surahID, verse }: { surahData: Surah; surahID: number; verse: number | null }) {
   const targetVerseIndex = verse
   ? surahData.verses.findIndex(
       (v) => v.id === Number(verse)
     )
   : null;
-  if (!surahData)
-    return <Text style={styles.fallback}>Chapter not found.</Text>;
 
 
-  const [fontsLoaded] = useFonts({
+  useFonts({
     Uthmanic: require("../assets/fonts/UthmanTN_v2-0.ttf"),
   });
 
   
-  const flatListRef = useRef(null);
+  const flatListRef = useRef<FlatList<Verse>>(null);
 
   // Save scroll position (INDEX)
 
@@ -43,15 +53,15 @@ export default function Chapter() {
     lastReadVerseIndexKeyRef.current = lastReadVerseIndexKey;
   }, [lastReadVerseIndexKey, targetVerseIndex]);
 
-  const enableLastReadSaving = () => {
+  const enableLastReadSaving = useCallback(() => {
     if (targetVerseIndex !== null) return;
 
     setTimeout(() => {
       shouldSaveLastReadRef.current = true;
     }, 1500);
-  };
+  }, [targetVerseIndex]);
 
-  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+  const onViewableItemsChanged = useCallback<NonNullable<FlatListProps<Verse>['onViewableItemsChanged']>>(({ viewableItems }) => {
     if (!shouldSaveLastReadRef.current) return;
 
     const firstVisible = viewableItems[0];
@@ -62,15 +72,11 @@ export default function Chapter() {
       lastReadVerseIndexKeyRef.current,
       firstVisible.index.toString()
     );
-  }).current;
-
-  const viewabilityConfig = useRef({
-    itemVisiblePercentThreshold: 50,
-  }).current;
+  }, []);
 
   // Restore scroll position
 
-  const scrollToIndex = (index, viewPosition = 0) => {
+  const scrollToIndex = useCallback((index: number | null, viewPosition = 0) => {
     if (index === null || index < 0) return;
 
     setTimeout(() => {
@@ -80,7 +86,7 @@ export default function Chapter() {
         viewPosition,
       });
     }, 500);
-  };
+  }, []);
 
 
   useEffect(() => {
@@ -112,7 +118,7 @@ export default function Chapter() {
       
       else{
         //This way we dont update if Case 1 happens
-        await AsyncStorage.setItem("LastSurahViewed", surahStr)
+        await AsyncStorage.setItem("LastSurahViewed", String(surahID + 1))
         enableLastReadSaving();
       }
  
@@ -120,12 +126,12 @@ export default function Chapter() {
     };
 
     run();
-  }, [surahID, targetVerseIndex, lastReadVerseIndexKey]);
+  }, [surahID, targetVerseIndex, lastReadVerseIndexKey, enableLastReadSaving, scrollToIndex]);
 
 
   // Render verse
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }: ListRenderItemInfo<Verse>) => {
     
 
     return (
@@ -146,7 +152,7 @@ export default function Chapter() {
 
   // Fix scrollToIndex edge cases
 
-  const handleScrollToIndexFailed = (info) => {
+  const handleScrollToIndexFailed: NonNullable<FlatListProps<Verse>['onScrollToIndexFailed']> = (info) => {
     const wait = new Promise((resolve) => setTimeout(resolve, 500));
     const viewPosition = targetVerseIndex !== null ? 0.5 : 0;
 

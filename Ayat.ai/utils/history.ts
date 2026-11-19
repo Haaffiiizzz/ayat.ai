@@ -37,7 +37,7 @@ function hasVerseFields(item: Partial<VerseDetails>): item is VerseDetails {
   );
 }
 
-async function readStore(fromWhere: String = ""): Promise<HistoryItem[]> {
+async function readStore(fromWhere: string = ""): Promise<HistoryItem[]> {
   const isKeyword = fromWhere === "keyword" || fromWhere === "Search";
   try {
     let raw;
@@ -56,7 +56,7 @@ async function readStore(fromWhere: String = ""): Promise<HistoryItem[]> {
   }
 }
 
-async function writeStore(items: HistoryItem[], fromWhere: String = ""): Promise<void> {
+async function writeStore(items: HistoryItem[], fromWhere: string = ""): Promise<void> {
   const isKeyword = fromWhere === "keyword" || fromWhere === "Search";
   if (isKeyword) {
     await AsyncStorage.setItem(KEYWORD_STORAGE_KEY, JSON.stringify(items));
@@ -65,13 +65,13 @@ async function writeStore(items: HistoryItem[], fromWhere: String = ""): Promise
   }
 }
 
-export async function getHistory(fromWhere: String = ""): Promise<HistoryItem[]> {
+export async function getHistory(fromWhere: string = ""): Promise<HistoryItem[]> {
   const list = await readStore(fromWhere);
   // newest first
   return list.sort((a, b) => b.searchedAt - a.searchedAt);
 }
 
-export async function clearHistory(fromWhere: String = ""): Promise<void> {
+export async function clearHistory(fromWhere: string = ""): Promise<void> {
   if (fromWhere === "keyword" || fromWhere === "Search") {
     await AsyncStorage.removeItem(KEYWORD_STORAGE_KEY);
   } else {
@@ -79,7 +79,7 @@ export async function clearHistory(fromWhere: String = ""): Promise<void> {
   }
 }
 
-export async function removeFromHistory(verse: VerseDetails, fromWhere: String = "", searchTerm: String = ""): Promise<void> {
+export async function removeFromHistory(verse: VerseDetails, fromWhere: string = "", searchTerm: string = ""): Promise<void> {
   const isKeyword = fromWhere === "keyword" || fromWhere === "Search";
   const list = await readStore(fromWhere);
   let next: HistoryItem[];
@@ -95,7 +95,7 @@ export async function removeFromHistory(verse: VerseDetails, fromWhere: String =
   await writeStore(next, fromWhere);
 }
 
-export async function addSearchedVerse(verseData: VerseDetails | null, fromWhere: String = "", searchTerm: String = ""): Promise<void> {
+export async function addSearchedVerse(verseData: VerseDetails | null, fromWhere: string = "", searchTerm: string = ""): Promise<void> {
   const isKeyword = fromWhere === "keyword" || fromWhere === "Search";
   const now = Date.now();
   const list = await readStore(isKeyword ? "keyword" : "");
@@ -137,11 +137,11 @@ export async function addSearchedVerse(verseData: VerseDetails | null, fromWhere
   await writeStore(next, isKeyword ? "keyword" : "");
 }
 
-export async function addSearchedKeyword(searchTerm: String = "", topResult: VerseDetails): Promise<void>{
+export async function addSearchedKeyword(searchTerm: string = "", topResult: VerseDetails): Promise<void>{
   await addSearchedVerse(topResult, "keyword", searchTerm);
 }
 
-export function formatTime(timestamp) {
+export function formatTime(timestamp: number) {
   const now = Date.now();
   const diff = now - timestamp;
 
